@@ -1,0 +1,51 @@
+<main class="bg-login justify-center gap-x-24 flex content-between p-12 items-center   h-dvh">
+  <div class="w-1/3 flex flex-col gap-y-9 p-2 px-7 justify-center items-start text-start rounded-2xl h-full">
+    <div class="">
+        <img src="./photos/logo.png" class="object-contain w-4/5 h-fit" alt="Company logo">
+    </div>
+    <h1 class="font-bold text-white xl:text-3xl">Request Management System</h1>
+  </div>
+  <div class="w-2/5 flex justify-evenly  rounded-2xl content-center h-3/5 text-center">
+    <form action=""  class="border border-[#a5acc1]  bg-white/30 backdrop-blur-3xl text-white rounded-xl py-9 px-8 w-4/5 text-xs text-start flex flex-col gap-y-4">
+        <p class="text-sm">Please login to your account</p>
+        <div class="flex flex-col gap-2">
+            <label for="user_name" >İstifadəçi adı</label>
+            <input id="user_name" type="text" class="border outline-none border-white rounded-sm px-2 py-2.5 text-[13px] font-light bg-white/20" placeholder="İstifadəçi adını daxil edin"/>
+        </div>
+        <div class="flex flex-col gap-2 relative ">
+            <label for="user_password" >Şifrə</label>
+            <input id="user_password" [type]="showpassword ? 'text':'password'" class="border outline-none border-white rounded-sm px-2 py-2.5 text-[13px] font-light bg-white/20" placeholder="Şifrəni daxil edin"/>
+           <button 
+                type="button"
+                (click)="togglePasswordVisibility()"
+                class="absolute right-3 top-[52%] cursor-pointer text-white/70 hover:text-white focus:outline-none"
+            >
+                @if(showpassword){
+
+                
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a9.977 9.977 0 012.34-4.045m3.574-2.49A9.956 9.956 0 0112 5c4.478 0 8.269 2.943 9.543 7a9.976 9.976 0 01-4.29 5.045M15 12a3 3 0 00-3-3m0 0a3 3 0 013 3m0 0a3 3 0 01-3 3m0 0a3 3 0 01-3-3m0 0a3 3 0 013-3" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 3l18 18" />
+                </svg>
+            }@else {
+
+            
+
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+            }
+            </button>
+
+        </div>
+        <div class="flex flex-col gap-2">
+            <button class=" bg-[#323458] text-sm py-2 rounded-sm cursor-pointer hover:bg-[#50516c] transition duration-300" type="submit">Daxil ol</button>
+        </div>
+    </form>
+  </div>
+</main>
