@@ -1,0 +1,45 @@
+<div class="flex min-h-screen h-fit  bg-gray-100">
+  <!-- Sidebar -->
+  <aside class="w-56 bg-white shadow-lg flex flex-col">
+    <div class="p-4">
+      <img src="./photos/logo(rgb).png" class="object-contain w-1/2" alt="Company colored logo">
+    </div>
+    <nav class="flex-1 px-3 py-4 text-center bg-[#55539f]">
+      <ul class="space-y-2 mb-5 text-white">
+        <li>
+          <a routerLinkActive="active-link" routerLink="/dashboard/requests" class="flex items-center group p-2 rounded-lg hover:bg-white/30 hover:cursor-pointer opacity-70 hover:opacity-100">
+            <i class="bi bi-file-earmark mr-3 bg-white/30 rounded-sm py-1 px-2 group-hover:text-green-300"></i>
+            <span class="ml-2 text-sm">Sorğular</span>
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/dashboard/reports"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="flex items-center p-2 rounded-lg group hover:bg-white/30 hover:cursor-pointer opacity-70 hover:opacity-100"
+          >
+            <i class="bi bi-bar-chart-line mr-3 bg-white/30 rounded-sm py-1 px-2 group-hover:text-green-300"></i>
+            <span class="ml-2 text-sm">Hesabat</span>
+          </a>
+
+        </li>
+        <li>
+          <a routerLinkActive="active-link" routerLink="/dashboard/profile" class="flex items-center group p-2 rounded-lg hover:bg-white/30 hover:cursor-pointer opacity-70 hover:opacity-100">
+            <i class="bi bi-person mr-3 bg-white/30 rounded-sm py-1 px-2 group-hover:text-green-300"></i>
+            <span class="ml-2 text-sm">Profil</span>
+          </a>
+        </li>
+      </ul>
+      <button class="w-1/5 mt-5 bg-white/20 text-white py-2 rounded-lg hover:bg-white/30 cursor-pointer">
+        <i class="bi bi-caret-left"></i>
+      </button>
+    </nav>
+
+  </aside>
+
+  <!-- Main content -->
+  <main class="flex-1 p-6">
+    <router-outlet></router-outlet>
+  </main>
+</div>

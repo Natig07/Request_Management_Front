@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { UserService } from './services/UserService/UserService';
 
 @Component({
   selector: 'app-root',
@@ -9,4 +10,10 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('Request_Management');
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit() {
+  this.userService.restoreUserFromStorage();
+}
 }

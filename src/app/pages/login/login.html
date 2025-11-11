@@ -1,24 +1,27 @@
-<main class="bg-login justify-center gap-x-24 flex content-between p-12 items-center   h-dvh">
+<main class="bg-login justify-center gap-x-24 flex content-between p-12 items-center flex-wrap   h-dvh">
   <div class="w-1/3 flex flex-col gap-y-9 p-2 px-7 justify-center items-start text-start rounded-2xl h-full">
     <div class="">
         <img src="./photos/logo.png" class="object-contain w-4/5 h-fit" alt="Company logo">
     </div>
     <h1 class="font-bold text-white xl:text-3xl">Request Management System</h1>
   </div>
-  <div class="w-2/5 flex justify-evenly  rounded-2xl content-center h-3/5 text-center">
-    <form action=""  class="border border-[#a5acc1]  bg-white/30 backdrop-blur-3xl text-white rounded-xl py-9 px-8 w-4/5 text-xs text-start flex flex-col gap-y-4">
+  <div class="w-2/5 flex  flex-col justify-evenly  rounded-2xl content-center h-3/5 text-center">
+    <form (ngSubmit)="onLogin()"  
+    #loginForm="ngForm"
+    class="border border-[#a5acc1]  bg-white/30 backdrop-blur-3xl text-white rounded-xl py-9 px-8 w-4/5 text-xs text-start flex flex-col gap-y-4">
         <p class="text-sm">Please login to your account</p>
         <div class="flex flex-col gap-2">
             <label for="user_name" >İstifadəçi adı</label>
-            <input id="user_name" type="text" class="border outline-none border-white rounded-sm px-2 py-2.5 text-[13px] font-light bg-white/20" placeholder="İstifadəçi adını daxil edin"/>
+            <input id="user_name" type="text" [ngClass]="{'border-[#f03955] text-[#dd233f] font-semibold  bg-white/50':errorMessage, 'border-white text-white bg-white/20 font-light':!errorMessage}" class="border  outline-none rounded-sm px-2 py-2.5 text-[13px]" placeholder="İstifadəçi adını daxil edin" [(ngModel)]="loginData.username" [ngModelOptions]="{standalone:true}" required/>
         </div>
         <div class="flex flex-col gap-2 relative ">
             <label for="user_password" >Şifrə</label>
-            <input id="user_password" [type]="showpassword ? 'text':'password'" class="border outline-none border-white rounded-sm px-2 py-2.5 text-[13px] font-light bg-white/20" placeholder="Şifrəni daxil edin"/>
+            <input id="user_password" [type]="showpassword ? 'text':'password'" [ngClass]="{'border-[#f03955] text-[#dd233f] bg-white/50 font-semibold':errorMessage, 'border-white text-white bg-white/20 font-light':!errorMessage}" class="border outline-none  rounded-sm px-2 py-2.5 text-[13px] " placeholder="Şifrəni daxil edin" [(ngModel)]="loginData.password" [ngModelOptions]="{standalone:true}" required />
            <button 
                 type="button"
                 (click)="togglePasswordVisibility()"
                 class="absolute right-3 top-[52%] cursor-pointer text-white/70 hover:text-white focus:outline-none"
+                [disabled]="loginForm.invalid"
             >
                 @if(showpassword){
 
@@ -43,9 +46,27 @@
             </button>
 
         </div>
+        @if (errorMessage) {
+      
+        <div  class="error w-full text-center text-[#dd233f] font-semibold">{{ errorMessage }}</div>
+    }
         <div class="flex flex-col gap-2">
             <button class=" bg-[#323458] text-sm py-2 rounded-sm cursor-pointer hover:bg-[#50516c] transition duration-300" type="submit">Daxil ol</button>
         </div>
     </form>
+    
   </div>
+
+  @if (loading) {
+    <div class="flex fixed top-0 left-0 w-dvw h-dvh bg-black/45  justify-center items-center">
+        <div
+            class="animate-spin inline-block  size-14 border-[3px] border-current border-t-transparent text-white rounded-full"
+            role="status"
+            aria-label="loading"
+        >
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    
+  }
 </main>

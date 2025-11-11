@@ -1,2 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+@layer components {
+    .active-link{
+       @apply text-white opacity-100!;
+    }
+  .active-link i {
+    @apply   text-green-300 ;
+  }
+  
+}
