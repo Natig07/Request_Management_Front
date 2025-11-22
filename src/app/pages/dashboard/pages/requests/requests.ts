@@ -4,17 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Button } from '../../../../components/button/button';
 import { Auth } from '../../../../services/auth';
+import { STATUS_MAP } from '../../../../components/status_map';
+import { RequestService } from '../../../../services/RequestServices/RequestService';
+import { Row } from '../../../../services/Interfaces';
 
-interface Row {
-  id: number;
-  sender: string;
-  header: string;
-  text: string;
-  category: string;
-  executor: string;
-  date: string;
-  status: string;
-}
 
 
 
@@ -79,403 +72,407 @@ export class Requests {
   { label: 'Status', key: 'status' },
 ];
 
-  data: Row[] = [
-  { id: 12746, 
-    sender: 'Oqtay.İbrahimov', 
-    header: 'test',
-    text:"From: Nigar.T Kerimova Sent:Tuesday 24.07.2025 14:16",
-    category: 'IRD Test proqramı', 
-    executor:"Nariman.Ehmedov", 
-    date: (new Date("2025-07-24T14:16")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'qapalı' 
-  },
-  { id: 32349, 
-    sender: 'Elshan.Sharifov', 
-    header: 'master.socar.az',
-    text:"From: Elshan Sharifov Sent: Wednesday 02.11.2024 10:41",
-    category: 'Sayğaclar Plomblar', 
-    executor:"Kenan.Mikayilov", 
-    date: (new Date("2024-11-02 10:41")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'açıq' 
-  },
-  { id: 20443, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3dfijhwihfhefeicerycbeyrgweuifwefygewy",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'icrada' 
-  },
-  { id: 56882, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'təsdiqləndi' 
-  },
-  { id: 34223, 
-    sender: 'Vugar.Samadov',
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'imtina' 
-  },
-  { id: 12676, 
-    sender: 'Oqtay.İbrahimov', 
-    header: 'test',
-    text:"From: Nigar.T Kerimova Sent:Tuesday 24.07.2025 14:16",
-    category: 'IRD Test proqramı', 
-    executor:"Nariman.Ehmedov", 
-    date: (new Date("2025-07-24T14:16")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'qapalı' 
-  },
-  { id: 32459, 
-    sender: 'Elshan.Sharifov', 
-    header: 'master.socar.az',
-    text:"From: Elshan Sharifov Sent: Wednesday 02.11.2024 10:41",
-    category: 'Sayğaclar Plomblar', 
-    executor:"Kenan.Mikayilov", 
-    date: (new Date("2024-11-02 10:41")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'açıq' 
-  },
-  { id: 20893, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'icrada' 
-  },
-  { id: 53882, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'təsdiqləndi' 
-  },
-  { id: 32623, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'gözləmədə' 
-  },
-  { id: 19846, 
-    sender: 'Oqtay.İbrahimov', 
-    header: 'test',
-    text:"From: Nigar.T Kerimova Sent:Tuesday 24.07.2025 14:16",
-    category: 'IRD Test proqramı', 
-    executor:"Nariman.Ehmedov", 
-    date: (new Date("2025-07-24T14:16")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'qapalı' 
-  },
-  { id: 33649, 
-    sender: 'Elshan.Sharifov', 
-    header: 'master.socar.az',
-    text:"From: Elshan Sharifov Sent: Wednesday 02.11.2024 10:41",
-    category: 'Sayğaclar Plomblar', 
-    executor:"Kenan.Mikayilov", 
-    date: (new Date("2024-11-02 10:41")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'açıq' 
-  },
-  { id: 28443, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'icrada' 
-  },
-  { id: 52882, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'təsdiqləndi' 
-  },
-  { id: 30223, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-    day:"2-digit",
-    month:"2-digit",
-    year:"numeric",
-    hour:"2-digit",
-    minute:"2-digit",
-    hour12:false,
-  }
-  ).replace(",","").replaceAll("/","."), 
-  status: 'imtina' 
-  },
-  { id: 12846, 
-    sender: 'Oqtay.İbrahimov', 
-    header: 'test',
-    text:"From: Nigar.T Kerimova Sent:Tuesday 24.07.2025 14:16",
-    category: 'IRD Test proqramı', 
-    executor:"Nariman.Ehmedov", 
-    date: (new Date("2025-07-24T14:16")).toLocaleDateString("en-GB",{
-    day:"2-digit",
-    month:"2-digit",
-    year:"numeric",
-    hour:"2-digit",
-    minute:"2-digit",
-    hour12:false,
-  }
-  ).replace(",","").replaceAll("/","."), 
-    status: 'qapalı' 
-  },
-  { id: 32229, 
-    sender: 'Elshan.Sharifov', 
-    header: 'master.socar.az',
-    text:"From: Elshan Sharifov Sent: Wednesday 02.11.2024 10:41",
-    category: 'Sayğaclar Plomblar', 
-    executor:"Kenan.Mikayilov", 
-    date: (new Date("2024-11-02 10:41")).toLocaleDateString("en-GB",{
-    day:"2-digit",
-    month:"2-digit",
-    year:"numeric",
-    hour:"2-digit",
-    minute:"2-digit",
-    hour12:false,
-    }).replace(",","").replaceAll("/","."), 
-    status: 'açıq' 
-  },
-  { id: 20663, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }
-  ).replace(",","").replaceAll("/","."), 
-    status: 'icrada' 
-  },
-  { id: 56992, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }
-  ).replace(",","").replaceAll("/","."), 
-    status: 'təsdiqləndi' 
-  },
-  { id: 32523, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }
-  ).replace(",","").replaceAll("/","."), 
-  status: 'imtina' 
-  },
-  { id: 19646, 
-    sender: 'Oqtay.İbrahimov', 
-    header: 'test',
-    text:"From: Nigar.T Kerimova Sent:Tuesday 24.07.2025 14:16",
-    category: 'IRD Test proqramı', 
-    executor:"Nariman.Ehmedov", 
-    date: (new Date("2025-07-24T14:16")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }
-  ).replace(",","").replaceAll("/","."), 
-    status: 'qapalı' 
-  },
-  { id: 30449, 
-    sender: 'Elshan.Sharifov', 
-    header: 'master.socar.az',
-    text:"From: Elshan Sharifov Sent: Wednesday 02.11.2024 10:41",
-    category: 'Sayğaclar Plomblar', 
-    executor:"Kenan.Mikayilov", 
-    date: (new Date("2024-11-02 10:41")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }
-  ).replace(",","").replaceAll("/","."), 
-    status: 'açıq' 
-  },
-  { id: 26743, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }
-  ).replace(",","").replaceAll("/","."), 
-  status: 'icrada' 
-  },
-  { id: 52232, 
-    sender: 'Vugar.Samadov',
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }
-  ).replace(",","").replaceAll("/","."), 
-    status: 'təsdiqləndi' 
-  },
-  { id: 39873, 
-    sender: 'Vugar.Samadov', 
-    header: 'Ödənişin silinməsi',
-    text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
-    category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
-    date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false,
-    }
-  ).replace(",","").replaceAll("/","."), 
-    status: 'imtina' 
-  },
-];
+  data: Row[] = []
+  loading=false;
+  
+  
+  // [
+  // { id: 12746, 
+  //   sender: 'Oqtay.İbrahimov', 
+  //   header: 'test',
+  //   text:"From: Nigar.T Kerimova Sent:Tuesday 24.07.2025 14:16",
+  //   category: 'IRD Test proqramı', 
+  //   executor:"Nariman.Ehmedov", 
+  //   date: (new Date("2025-07-24T14:16")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'qapalı' 
+  // },
+  // { id: 32349, 
+  //   sender: 'Elshan.Sharifov', 
+  //   header: 'master.socar.az',
+  //   text:"From: Elshan Sharifov Sent: Wednesday 02.11.2024 10:41",
+  //   category: 'Sayğaclar Plomblar', 
+  //   executor:"Kenan.Mikayilov", 
+  //   date: (new Date("2024-11-02 10:41")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'açıq' 
+  // },
+  // { id: 20443, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3dfijhwihfhefeicerycbeyrgweuifwefygewy",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'icrada' 
+  // },
+  // { id: 56882, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'təsdiqləndi' 
+  // },
+  // { id: 34223, 
+  //   sender: 'Vugar.Samadov',
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'imtina' 
+  // },
+  // { id: 12676, 
+  //   sender: 'Oqtay.İbrahimov', 
+  //   header: 'test',
+  //   text:"From: Nigar.T Kerimova Sent:Tuesday 24.07.2025 14:16",
+  //   category: 'IRD Test proqramı', 
+  //   executor:"Nariman.Ehmedov", 
+  //   date: (new Date("2025-07-24T14:16")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'qapalı' 
+  // },
+  // { id: 32459, 
+  //   sender: 'Elshan.Sharifov', 
+  //   header: 'master.socar.az',
+  //   text:"From: Elshan Sharifov Sent: Wednesday 02.11.2024 10:41",
+  //   category: 'Sayğaclar Plomblar', 
+  //   executor:"Kenan.Mikayilov", 
+  //   date: (new Date("2024-11-02 10:41")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'açıq' 
+  // },
+  // { id: 20893, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'icrada' 
+  // },
+  // { id: 53882, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'təsdiqləndi' 
+  // },
+  // { id: 32623, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'gözləmədə' 
+  // },
+  // { id: 19846, 
+  //   sender: 'Oqtay.İbrahimov', 
+  //   header: 'test',
+  //   text:"From: Nigar.T Kerimova Sent:Tuesday 24.07.2025 14:16",
+  //   category: 'IRD Test proqramı', 
+  //   executor:"Nariman.Ehmedov", 
+  //   date: (new Date("2025-07-24T14:16")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'qapalı' 
+  // },
+  // { id: 33649, 
+  //   sender: 'Elshan.Sharifov', 
+  //   header: 'master.socar.az',
+  //   text:"From: Elshan Sharifov Sent: Wednesday 02.11.2024 10:41",
+  //   category: 'Sayğaclar Plomblar', 
+  //   executor:"Kenan.Mikayilov", 
+  //   date: (new Date("2024-11-02 10:41")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'açıq' 
+  // },
+  // { id: 28443, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'icrada' 
+  // },
+  // { id: 52882, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'təsdiqləndi' 
+  // },
+  // { id: 30223, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //   day:"2-digit",
+  //   month:"2-digit",
+  //   year:"numeric",
+  //   hour:"2-digit",
+  //   minute:"2-digit",
+  //   hour12:false,
+  // }
+  // ).replace(",","").replaceAll("/","."), 
+  // status: 'imtina' 
+  // },
+  // { id: 12846, 
+  //   sender: 'Oqtay.İbrahimov', 
+  //   header: 'test',
+  //   text:"From: Nigar.T Kerimova Sent:Tuesday 24.07.2025 14:16",
+  //   category: 'IRD Test proqramı', 
+  //   executor:"Nariman.Ehmedov", 
+  //   date: (new Date("2025-07-24T14:16")).toLocaleDateString("en-GB",{
+  //   day:"2-digit",
+  //   month:"2-digit",
+  //   year:"numeric",
+  //   hour:"2-digit",
+  //   minute:"2-digit",
+  //   hour12:false,
+  // }
+  // ).replace(",","").replaceAll("/","."), 
+  //   status: 'qapalı' 
+  // },
+  // { id: 32229, 
+  //   sender: 'Elshan.Sharifov', 
+  //   header: 'master.socar.az',
+  //   text:"From: Elshan Sharifov Sent: Wednesday 02.11.2024 10:41",
+  //   category: 'Sayğaclar Plomblar', 
+  //   executor:"Kenan.Mikayilov", 
+  //   date: (new Date("2024-11-02 10:41")).toLocaleDateString("en-GB",{
+  //   day:"2-digit",
+  //   month:"2-digit",
+  //   year:"numeric",
+  //   hour:"2-digit",
+  //   minute:"2-digit",
+  //   hour12:false,
+  //   }).replace(",","").replaceAll("/","."), 
+  //   status: 'açıq' 
+  // },
+  // { id: 20663, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }
+  // ).replace(",","").replaceAll("/","."), 
+  //   status: 'icrada' 
+  // },
+  // { id: 56992, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }
+  // ).replace(",","").replaceAll("/","."), 
+  //   status: 'təsdiqləndi' 
+  // },
+  // { id: 32523, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }
+  // ).replace(",","").replaceAll("/","."), 
+  // status: 'imtina' 
+  // },
+  // { id: 19646, 
+  //   sender: 'Oqtay.İbrahimov', 
+  //   header: 'test',
+  //   text:"From: Nigar.T Kerimova Sent:Tuesday 24.07.2025 14:16",
+  //   category: 'IRD Test proqramı', 
+  //   executor:"Nariman.Ehmedov", 
+  //   date: (new Date("2025-07-24T14:16")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }
+  // ).replace(",","").replaceAll("/","."), 
+  //   status: 'qapalı' 
+  // },
+  // { id: 30449, 
+  //   sender: 'Elshan.Sharifov', 
+  //   header: 'master.socar.az',
+  //   text:"From: Elshan Sharifov Sent: Wednesday 02.11.2024 10:41",
+  //   category: 'Sayğaclar Plomblar', 
+  //   executor:"Kenan.Mikayilov", 
+  //   date: (new Date("2024-11-02 10:41")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }
+  // ).replace(",","").replaceAll("/","."), 
+  //   status: 'açıq' 
+  // },
+  // { id: 26743, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }
+  // ).replace(",","").replaceAll("/","."), 
+  // status: 'icrada' 
+  // },
+  // { id: 52232, 
+  //   sender: 'Vugar.Samadov',
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }
+  // ).replace(",","").replaceAll("/","."), 
+  //   status: 'təsdiqləndi' 
+  // },
+  // { id: 39873, 
+  //   sender: 'Vugar.Samadov', 
+  //   header: 'Ödənişin silinməsi',
+  //   text:"Salam. Oktyabr ayında ünvansızlar cədvəlinə düşənskdeüdküdieüfjüfeo3",
+  //   category: 'Agis - Proqram təminatı', executor:"Nasimi.Behbudov", 
+  //   date:(new Date("2024-11-02 10:36")).toLocaleDateString("en-GB",{
+  //     day:"2-digit",
+  //     month:"2-digit",
+  //     year:"numeric",
+  //     hour:"2-digit",
+  //     minute:"2-digit",
+  //     hour12:false,
+  //   }
+  // ).replace(",","").replaceAll("/","."), 
+  //   status: 'imtina' 
+  // },
+  // ];
   
 updateFilterCounts() {
   this.filters.forEach(filter => {
@@ -489,16 +486,21 @@ updateFilterCounts() {
 
 
  
-sort(key: keyof Row) {
-  this.sortColumn = key;
-    this.isAsc=!this.isAsc;
+  sort(key: keyof Row) {
+    this.sortColumn = key;
+    this.isAsc = !this.isAsc;
 
-  this.data.sort((a, b) => {
-    if (a[key] < b[key]) return this.isAsc ? -1 : 1;
-    if (a[key] > b[key]) return this.isAsc ? 1 : -1;
-    return 0;
-  });
-}
+    this.data.sort((a, b) => {
+      const valA = a[key] ?? '';
+      const valB = b[key] ?? '';
+      
+      if (valA < valB) return this.isAsc ? -1 : 1;
+      if (valA > valB) return this.isAsc ? 1 : -1;
+      return 0;
+    });
+  }
+
+
 
   activeFilter = 'all';
 
@@ -543,10 +545,49 @@ sort(key: keyof Row) {
   userName: string | null = null;
 
   ngOnInit() {
+  this.fetchRequests();
   this.updateFilterCounts();
   this.totalPages = Math.ceil(this.data.length / this.selectedStatus);
   this.updateVisiblePages();
   this.userName = this.authService.getUserFullName();
+
+}
+
+fetchRequests() {
+  this.loading = true;
+  this.requestService.getAllRequests().subscribe({
+    next: (res: any[]) => {
+      // Map backend DTO to Row type for your table
+      console.log(res);
+      this.data = res.map(r => ({
+        id: r.id,
+        sender: `${r.username+" "+r.usersurname}`,
+        header: r.header ?? r.text?.slice(0, 20) ?? '',
+        text: r.text ?? '',
+        category: r.categoryName,
+        executor: r.executor?.name ?? 'Yoxdur',
+        date: new Date(r.createdAt).toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }).replace(',', '').replaceAll('/', '.'),
+        
+        status: r.statusName=='New'?'açıq':r.statusName==' İnProgress'?'gözləmədə':r.statusName=='Completed'?'təsdiqləndi':r.statusName=='Denied'?'imtina':r.statusName=='İnExecution'?'icrada':'qapalı',
+        file: r.file?.fileName ?? null
+      }));
+
+      this.updateFilterCounts();
+      this.updatePagination();
+      this.loading = false;
+    },
+    error: (err) => {
+      console.error('Error fetching requests', err);
+      this.loading = false;
+    }
+  });
 }
 
 
@@ -618,17 +659,19 @@ sort(key: keyof Row) {
   }
   
   getFilterCount(status: string) {
-  return this.data.filter(row => status === 'all' ? true : row.status === status).length;
-}
+    return this.data.filter(row => status === 'all' ? true : row.status === status).length;
+  }
 
 
-  constructor(private authService: Auth) {}
+  constructor(private authService: Auth, private requestService: RequestService) {}
 
   
 
   logout() {
     this.authService.logout();
   }
+
+  STATUS_MAP=STATUS_MAP;
  
   
 

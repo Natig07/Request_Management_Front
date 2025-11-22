@@ -23,3 +23,30 @@ export interface PasswordRenew{
   newPassword:string,
   repeatNewPassword:string
 }
+
+export interface Category{
+  id:number,
+  name:string
+}
+
+export interface Request {
+  text: string;
+  userId: number;
+  ReqCategoryId: number;
+  ReqPriorityId: number;
+  ReqTypeId: number;
+  File?: File;
+  header: string;
+}
+
+export interface Row {
+  id: number;
+  sender: string;
+  header: string;
+  text: string;
+  category: string;
+  executor: string;
+  date: string;
+  status: string;
+  file?: string; // optional
+}

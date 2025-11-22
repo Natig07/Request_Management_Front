@@ -21,17 +21,19 @@
 
         </div>
 
-        <button class="bg-[#6562F0] w-[15%] text-sm flex items-end cursor-pointer hover:bg-[#1613be] justify-center  rounded-md py-2 h-fit text-white">
+        <a routerLink="/dashboard/requests/createRequest" class="bg-[#6562F0] w-[15%] text-sm flex items-end cursor-pointer hover:bg-[#1613be] justify-center  rounded-md py-2 h-fit text-white">
             <i class="bi flex  bi-plus text-lg  "></i> <span class="p-0">Sorğu yarat</span>
-        </button>
+        </a>
     </div>
 
     <div class="flex w-full ml-5 mt-12 relative my-7 border-b"> 
-        <button *ngFor="let filter of filters" 
-        (click)="setActiveFilter(filter.status)" 
-        [ngClass]="{ 'border border-b-white   -mb-[1px] text-[#55539F]  font-semibold': activeFilter === filter.status }" class="p-1 text-[12px] rounded-t-sm py-2 cursor-pointer  w-[13%]" > {{ filter.label }} 
-        <span class="mx-2 text-[#6562F0]">{{ filter.count }}</span> 
-    </button> 
+        @for (filter of filters ; track filter) {
+            <button  
+            (click)="setActiveFilter(filter.status)" 
+            [ngClass]="{ 'border border-b-white   -mb-[1px] text-[#55539F]  font-semibold': activeFilter === filter.status }" class="p-1 text-[12px] rounded-t-sm py-2 cursor-pointer  w-[13%]" > {{ filter.label }} 
+            <span class="mx-2 text-[#6562F0]">{{ filter.count }}</span> 
+            </button>
+        } 
     </div>
 
     <!-- Table Filter dropdown -->
@@ -149,68 +151,35 @@
 
             <tbody class="divide-y divide-gray-200 bg-white">
                 @for (row of getTableData(); track row) {
-                  <tr class="w-fit">
-                    @for (col of columns ; track col ) {
-                        <td
-                        class="px-2 text-left py-3 text-sm text-gray-700 w-fit max-w-[150px] "
-                        >
-                            
-                            @if (row[col.key]=="icrada") {
-                                <app-button color="#6045E2" children="{{row[col.key]}}">
+                    <tr>
+                        @for (col of columns; track col) {
+                        <td routerLink="/dashboard/requests/singleRequest" class="px-2 text-left py-3 text-sm text-gray-700 w-fit cursor-pointer max-w-[150px]">
 
-                                </app-button>
-                            
-                            }@else if(row[col.key]=="qapalı"){
-                                <app-button color="#1976D2" children="{{row[col.key]}}">
-
-                                </app-button>
-                                 
-                            }@else if(row[col.key]=="açıq"){
-                                <app-button color="#F57F17" children="{{row[col.key]}}"></app-button>
-
-                                
-                            }@else if(row[col.key]=="təsdiqləndi"){
-                                <app-button color="#1BC167" children="{{row[col.key]}}"></app-button>
-
-                                
-                            }@else if(row[col.key]=="imtina"){
-                                <button                 class="rounded-sm text-[12px] cursor-pointer font-semibold hover:bg-[#FB2C36] hover:text-white transition duration-300 border border-[#FB2C36] text-[#FB2C36] uppercase w-full py-0.5"
-                                >
-                                    {{row[col.key]}}
-                                </button>
-                                
-
-
-                                
-                            }@else if(row[col.key]=="gözləmədə"){
-                                <button                 class="rounded-sm text-[12px] cursor-pointer font-semibold hover:bg-[#ffb900] hover:text-white transition duration-300 border border-[#ffb900] text-[#ffb900] uppercase w-full py-0.5"
-                                >
-                                    {{row[col.key]}}
-                                </button>
-                                
-                                
-                            }@else if(col.key === 'text'){
-                                <!-- Multi-line truncation for 'text' column -->
-                                @if(col.key=='text'){
-                                    <ng-container >
-                                        <span
-                                        class="max-w-32 text-sm text-gray-700 overflow-hidden break-words line-clamp-3"
-                                        >
-                                        {{ row[col.key] }}
-                                        </span>
-                                    </ng-container>
-                                }
-                                
-                            }@else {
-                                <ng-container>
-                                {{ row[col.key] }}
-                                </ng-container>
+                            @if (STATUS_MAP[row[col.key] ?? '']) {
+                            <app-button 
+                                [color]="STATUS_MAP[row[col.key]!]"
+                                [children]="row[col.key] + ''">
+                            </app-button>
                             }
+                            @else {
+                            @if (col.key === 'text') {
+                                <span class="max-w-32 text-sm text-gray-700 overflow-hidden break-words line-clamp-3">
+                                {{ row[col.key] }}
+                                </span>
+                            }
+                            @else {
+                                {{ row[col.key] }}
+                            }
+                            }
+
                         </td>
-                    }
-                   
-                </tr>
+                        }
+                    </tr>
                 }
+
+                
+                
+
                 
             </tbody>
             </table>
