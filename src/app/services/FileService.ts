@@ -10,7 +10,20 @@ export class FileService {
     constructor(private http:HttpClient){}
 
     DeleteFile(fileId:number):Observable<any>{
-        const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
-        return this.http.delete(`${this.baseUrl}/${fileId}`,{headers});
+        return this.http.delete(`${this.baseUrl}/${fileId}`);
+    }
+
+
+    getFileUrl(fileId: number): Observable<Blob> {
+        return this.http.get(`${this.baseUrl}/${fileId}`, {
+        responseType: 'blob'
+        });
+    }
+
+    downloadFile(fileId:number){
+        return this.http.get(`${this.baseUrl}/download/${fileId}`, {
+        observe:"response",
+        responseType:"blob",
+        });
     }
 }

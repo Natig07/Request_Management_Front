@@ -33,7 +33,7 @@ export const routes: Routes = [
                     { path: 'reports', component: Reports,canActivate:[AuthGuard] },
                     { path: 'profile', component: Profile,canActivate:[AuthGuard] },
                     {path:'requests/createRequest',component:CreateRequest,canActivate:[AuthGuard]},
-                    {path:'requests/singleRequest',component:SingleRequest,canActivate:[AuthGuard]}
+                    {path:'requests/singleRequest/:id',component:SingleRequest,canActivate:[AuthGuard]}
                 ]
             },
         ]

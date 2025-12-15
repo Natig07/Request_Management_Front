@@ -1,15 +1,23 @@
 <div class="flex min-h-screen h-fit  bg-gray-100">
   <!-- Sidebar -->
-  <aside class="w-56 bg-white shadow-lg flex flex-col">
-    <div class="p-4">
-      <img src="./photos/logo(rgb).png" class="object-contain w-1/2" alt="Company colored logo">
+  <aside class="w-56 bg-[#E6E6E6] shadow-lg flex flex-col transition-all duration-300 overflow-hidden"
+    [class.w-56]="!isCollapsed" 
+    [class.w-24]="isCollapsed"
+  >
+    <div class="transition-all duration-300 flex"  [ngClass]="isCollapsed?'px-1 py-4':'p-4'">
+      <img src="./photos/logo(rgb).png" class="object-contain transition-all duration-300" [ngClass]="isCollapsed?'w-16':'w-24'" alt="Company colored logo">
     </div>
-    <nav class="flex-1 px-3 py-4 text-center bg-[#55539f]">
-      <ul class="space-y-2 mb-5 text-white">
+    <nav class="flex-1 px-3 py-4 text-center  bg-[#55539f]">
+      <ul class="space-y-2 transition-all duration-300 mb-5 text-white">
         <li>
-          <a routerLinkActive="active-link" routerLink="/dashboard/requests" class="flex items-center group p-2 rounded-lg hover:bg-white/30 hover:cursor-pointer opacity-70 hover:opacity-100">
+          <a routerLinkActive="active-link" routerLink="/dashboard/requests" class="flex  items-center group p-2 rounded-lg hover:bg-white/30 hover:cursor-pointer opacity-70 hover:opacity-100"
+          [ngClass]="isCollapsed?'justify-center':''"
+          >
             <i class="bi bi-file-earmark mr-3 bg-white/30 rounded-sm py-1 px-2 group-hover:text-green-300"></i>
-            <span class="ml-2 text-sm">Sorğular</span>
+            @if (!isCollapsed) {
+              
+              <span class="ml-2 text-sm">Sorğular</span>
+            }
           </a>
         </li>
         <li>
@@ -18,21 +26,31 @@
             routerLinkActive="active-link"
             [routerLinkActiveOptions]="{ exact: true }"
             class="flex items-center p-2 rounded-lg group hover:bg-white/30 hover:cursor-pointer opacity-70 hover:opacity-100"
+            [ngClass]="isCollapsed?'justify-center':''"
           >
             <i class="bi bi-bar-chart-line mr-3 bg-white/30 rounded-sm py-1 px-2 group-hover:text-green-300"></i>
-            <span class="ml-2 text-sm">Hesabat</span>
+            @if (!isCollapsed) {
+              
+              <span class="ml-2 text-sm">Hesabat</span>
+            }
           </a>
 
         </li>
         <li>
-          <a routerLinkActive="active-link" routerLink="/dashboard/profile" class="flex items-center group p-2 rounded-lg hover:bg-white/30 hover:cursor-pointer opacity-70 hover:opacity-100">
+          <a routerLinkActive="active-link" routerLink="/dashboard/profile" class="flex items-center group p-2 rounded-lg hover:bg-white/30 hover:cursor-pointer opacity-70 hover:opacity-100"
+          [ngClass]="isCollapsed?'justify-center':''">
             <i class="bi bi-person mr-3 bg-white/30 rounded-sm py-1 px-2 group-hover:text-green-300"></i>
-            <span class="ml-2 text-sm">Profil</span>
+            @if (!isCollapsed) {
+              
+              <span class="ml-2 text-sm">Profil</span>
+            }
           </a>
         </li>
       </ul>
-      <button class="w-1/5 mt-5 bg-white/20 text-white py-2 rounded-lg hover:bg-white/30 cursor-pointer">
-        <i class="bi bi-caret-left"></i>
+      <button 
+        (click)="toggleSidebar()"
+        class="w-fit mt-5 bg-white/20 text-white py-2 px-3 rounded-lg hover:bg-white/30 cursor-pointer">
+        <i [class.bi-caret-left]="!isCollapsed" [class.bi-caret-right]="isCollapsed"></i>      
       </button>
     </nav>
 

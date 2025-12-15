@@ -91,7 +91,7 @@ getCategories() {
 }
 
 
-  formData = new FormData();
+  // formData = new FormData();
 
     onFileSelected(event: any) {
       const file = event.target.files[0];

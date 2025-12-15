@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, ɵInternalFormsSharedModule, Reacti
 import { Router, RouterModule } from '@angular/router';
 import { PasswordRenew } from '../../services/Interfaces';
 import { UserService } from '../../services/UserService/UserService';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth';
 
 
 
@@ -30,7 +30,7 @@ export class ForgetPassword {
   successMessage: string | null = null;
   errorMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private userService:UserService, private authServices:Auth) {
+  constructor(private fb: FormBuilder, private userService:UserService, private authServices:AuthService) {
     this.RenewPasswordForm = this.fb.group({
       oldPassword: ['', Validators.required],
       newPassword: ['', [Validators.required, Validators.minLength(8)]],

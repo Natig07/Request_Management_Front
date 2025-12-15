@@ -70,90 +70,43 @@
             <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                <th *ngFor="let col of columns" class="px-3 py-2 text-left text-sm font-medium text-gray-700">
-                    <div class="flex justify-between items-center">
-                    <span>{{ col.label }}</span>
-                    <div class="flex justify-center cursor-pointer">
-                        
-                        <i class="bi bi-arrow-down-up text-gray-400 hover:text-gray-700" (click)="sort(col.key)"></i>
-                    </div>
-                    </div>
-                </th>
+                    @for (col of columns ; track col) {
+                        <th class="px-3 py-2 text-left text-sm font-medium text-gray-700">
+                            <div class="flex justify-between items-center">
+                            <span>{{ col.label }}</span>
+                            <div class="flex justify-center cursor-pointer">
+                                
+                                <i class="bi bi-arrow-down-up text-gray-400 hover:text-gray-700" (click)="sort(col.key)"></i>
+                            </div>
+                            </div>
+                        </th>
+                    }
+                
                 </tr>
 
                 <tr>
-                    <th colspan="1" class=" px-1 py-2">
-                        <input
-                        type="text"
-                        (ngModel)="searchText"
-                        placeholder="Search..."
-                        class="w-full p-2 border  border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-[12px] font-normal"
-                        />
-                    </th>
-                    <th colspan="1" class="px-1 py-2">
-                        <input
-                        type="text"
-                        (ngModel)="searchText"
-                        placeholder="Search..."
-                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-[12px] font-normal"
-                        />
-                    </th>
-                    <th colspan="1" class="px-1 py-2">
-                        <input
-                        type="text"
-                        (ngModel)="searchText"
-                        placeholder="Search..."
-                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-[12px] font-normal"
-                        />
-                    </th>
-                    <th colspan="1" class="px-1 py-2">
-                        <input
-                        type="text"
-                        (ngModel)="searchText"
-                        placeholder="Search..."
-                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-[12px] font-normal"
-                        />
-                    </th>
-                    <th colspan="1" class="px-1 py-2">
-                        <input
-                        type="text"
-                        (ngModel)="searchText"
-                        placeholder="Search..."
-                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-[12px] font-normal"
-                        />
-                    </th>
-                    <th colspan="1" class="px-1 py-2">
-                        <input
-                        type="text"
-                        (ngModel)="searchText"
-                        placeholder="Search..."
-                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-[12px] font-normal"
-                        />
-                    </th>
-                    <th colspan="1" class="px-1 py-2">
-                        <input
-                        type="text"
-                        (ngModel)="searchText"
-                        placeholder="Search..."
-                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-[12px] font-normal"
-                        />
-                    </th>
-                    <th colspan="1" class="px-1 py-2">
-                        <input
-                        type="text"
-                        (ngModel)="searchText"
-                        placeholder="Search..."
-                        class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-[12px] font-normal"
-                        />
-                    </th>
+                    @for (col of columns ; track col) {
+                    
+                        <th class="px-1 py-2">
+                            <input
+                            type="text"
+                            [(ngModel)]="searchText[col.key]"
+                            placeholder="Search..."
+                            class="w-full p-2 border border-gray-300 rounded 
+                            mb-4
+                            focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-[12px] font-normal"
+                            />
+                        </th>
+                    }
+                            
                 </tr>
             </thead>
 
             <tbody class="divide-y divide-gray-200 bg-white">
                 @for (row of getTableData(); track row) {
-                    <tr>
+                    <tr [routerLink]="['/dashboard/requests/singleRequest',row.id]">
                         @for (col of columns; track col) {
-                        <td routerLink="/dashboard/requests/singleRequest" class="px-2 text-left py-3 text-sm text-gray-700 w-fit cursor-pointer max-w-[150px]">
+                        <td  class="px-2 text-left py-3 text-sm text-gray-700 w-fit cursor-pointer max-w-[150px]">
 
                             @if (STATUS_MAP[row[col.key] ?? '']) {
                             <app-button 
@@ -187,7 +140,7 @@
         </div>
     </div>
     <div class="end-content flex justify-between w-full">
-        <p class="px-2 text-gray-700 text-sm">12400 nəticədən 1-{{selectedStatus+1}} aralığı göstərlir.</p>
+        <p class="px-2 text-gray-700 text-sm">{{filters[0].count}} nəticədən 1-{{selectedStatus+1}} aralığı göstərlir.</p>
 
 
         <!-- Pagination -->

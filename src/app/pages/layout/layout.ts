@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { Sidebar } from './sidebar/sidebar';
 import { RouterModule } from "@angular/router";
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-layout',
@@ -37,7 +37,7 @@ export class Layout {
 }
 
 
-  constructor(private authService: Auth) {}
+  constructor(private authService: AuthService) {}
 
   
 

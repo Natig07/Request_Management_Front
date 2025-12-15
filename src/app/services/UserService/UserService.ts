@@ -12,8 +12,7 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   getUserInfo(userId: number): Observable<User> {
-    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
-    return this.http.get<User>(`${this.baseUrl}/User/${userId}`, { headers }).pipe(
+    return this.http.get<User>(`${this.baseUrl}/User/${userId}`).pipe(
       tap(user => {
         this.currentUserSubject.next(user);
         localStorage.setItem('currentUser', JSON.stringify(user)); 
@@ -35,9 +34,7 @@ export class UserService {
 
  
   getUserProfilePhotoUrl(fileId: number): Observable<Blob> {
-    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
     return this.http.get(`${this.baseUrl}/File/${fileId}`, {
-      headers,
       responseType: 'blob'
     });
   }
@@ -51,15 +48,13 @@ export class UserService {
   }
 
   updateUser(userId: number, data: FormData): Observable<User> {
-    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
    
-    return this.http.put<User>(`${this.baseUrl}/User/${userId}`, data, { headers });
+    return this.http.put<User>(`${this.baseUrl}/User/${userId}`, data);
   }
 
   renewPassword(dto:PasswordRenew):Observable<PasswordRenew>{
-    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
 
-    return this.http.post<PasswordRenew>(`${this.baseUrl}/Auth/renew-password`,dto,{headers})
+    return this.http.post<PasswordRenew>(`${this.baseUrl}/Auth/renew-password`,dto)
 
   }
 

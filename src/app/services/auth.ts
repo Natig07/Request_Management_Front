@@ -7,7 +7,7 @@ import { UserService } from './UserService/UserService';
 @Injectable({
   providedIn: 'root',
 })
-export class Auth {
+export class AuthService {
   private baseUrl = 'http://localhost:5269/api/Auth'; 
 
   constructor(
@@ -59,4 +59,16 @@ export class Auth {
     const lastname = localStorage.getItem('lastName');
     return firstname && lastname ? `${firstname} ${lastname}` : null;
   }
+  refreshToken(): Observable<any> {
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) return new Observable(observer => observer.error('No refresh token'));
+
+  return this.http.post(`${this.baseUrl}/refresh`, { refreshToken }).pipe(
+    tap((res: any) => {
+      // Update access token
+      localStorage.setItem('token', res.token);
+    })
+  );
+}
+
 }
