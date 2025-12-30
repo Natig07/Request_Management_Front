@@ -218,7 +218,7 @@
               <p class="text-sm text-gray-400 text-center">Hələki şərh yoxdur</p>
               
             }@else{
-                @for (comment of ReqComments  ; track comment) {
+                @for (comment of ReqComments  ; track comment.ReqId) {
                 <div >
                     <div class="flex gap-x-4 ml-6">
                         <div class="w-10 h-10 bg-gray-300 rounded-full flex justify-center items-center text-gray-400 font-semibold text-xl">

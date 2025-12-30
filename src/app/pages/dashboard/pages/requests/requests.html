@@ -10,7 +10,7 @@
     </div>
 
     <div class="flex w-full ml-5 mt-12 relative text-xs my-7 border-b"> 
-        @for (filter of filters; track filter) {
+        @for (filter of filters; track filter.label) {
             <button
                 (click)="setActiveFilter(filter.status)"
                 [ngClass]="{
