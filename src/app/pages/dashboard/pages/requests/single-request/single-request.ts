@@ -1,23 +1,24 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule, RouterLink } from '@angular/router';
+import { Component, OnInit, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterModule, RouterLink, Router } from '@angular/router';
 import { CommentInterface, RequestHistoryItem, Row, SingleRequestType, User } from '../../../../../services/Interfaces';
 import { RequestService } from '../../../../../services/RequestServices/RequestService';
 import { FileService } from '../../../../../services/FileService';
 import { UserService } from '../../../../../services/UserService/UserService';
 import { firstValueFrom, map } from 'rxjs';
+import { ReportService } from '../../../../../services/ReportServices/ReportService';
 
 @Component({
   selector: 'app-single-request',
-  imports: [RouterModule,ReactiveFormsModule,CommonModule,],
+  imports: [RouterModule,ReactiveFormsModule,CommonModule,FormsModule],
   templateUrl: './single-request.html',
   styleUrl: './single-request.css'
 })
 export class SingleRequest implements OnInit {
   Reqid:number=0;
   UserId:number=0
-  ReqCategory="3E-Agis";
+  ReqCategoryId:number=0;
   LogUserId:number=0;
   
   loading=false;
@@ -26,6 +27,10 @@ export class SingleRequest implements OnInit {
   selectedFile:File|null=null;
   successMessage: string | null = null;
   errorMessage: string | null = null;
+
+
+  existingReport: any = null;
+  reportSubmitted: boolean = false;
 
 
 
@@ -42,7 +47,134 @@ export class SingleRequest implements OnInit {
   setActiveFilter(filterStatus: string) {
     const filter = this.filters.find(f => f.status === filterStatus);
     this.activeFilter = filter ? filter.status : 'all';
+
+    this.loadFilteredData(filterStatus);
+
   }
+
+  loadFilteredData(section: string) {
+    this.loading = true;
+    
+    switch(section) {
+      case 'request':
+        this.loadRequestSection();
+        break;
+      case 'comment':
+        this.loadCommentsSection();
+        break;
+      case 'history':
+        this.loadHistorySection();
+        break;
+      case 'requestİnfo':
+        this.loadRequestInfoSection();
+        break;
+    }
+  }
+
+  loadRequestSection() {
+    this.ReqService.getRequestBySection(this.Reqid, 'request').subscribe({
+      next: (res: any) => {
+        // Update singleReq with responses
+        this.updateSingleReqFromResponse(res);
+        this.ReqComments = this.mapComments(res.responses || []);
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading request section:', err);
+        this.loading = false;
+      }
+    });
+  }
+  loadCommentsSection() {
+    this.getCommments(this.Reqid);
+  }
+  loadHistorySection() {
+    this.loadRequestHistory();
+  }
+
+  loadRequestInfoSection() {
+    // Request info is already loaded, just check for existing report
+    this.loadExistingReport();
+    this.loading = false;
+  }
+
+  mapComments(responses: any[]): CommentInterface[] {
+    return responses.map(h => {
+      const comment: CommentInterface = {
+        ReqId: h.id,
+        text: h.text,
+        createdAt: new Date(h.createdAt + "Z").toLocaleString('en-GB', {
+          timeZone: 'Asia/Baku',
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }).replace(',', '').replaceAll('/', '.'),
+        UserId: h.userId,
+        user: h.user,
+        attachmentId: h.attachmentId ?? null,
+        userProfileUrl: ''
+      };
+
+      if (h.user?.profilePhotoId) {
+        this.loadprofilePhoto(h.user.profilePhotoId).subscribe(url => {
+          comment.userProfileUrl = url;
+        });
+      }
+
+      return comment;
+    });
+  }
+
+  updateSingleReqFromResponse(res: any) {
+    this.singleReq = {
+      Reqid: res.id,
+      reqsender: res.user?.name + " " + res.user?.surname,
+      senderPosition: res.user.position,
+      header: res.header ?? '',
+      text: res.text ?? '',
+      category: res.reqCategory.name,
+      reqType: res.reqType.id,
+      reqPriority: res.reqPriority.id,
+      createdAt: new Date(res.createdAt+"Z").toLocaleString('en-GB', {
+        timeZone:'Asia/Baku',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).replace(',', '').replaceAll('/', '.'),
+      Reqstatus:{
+        id:res.reqStatus?.id,
+        name : res.reqStatus?.name == 'New' ? 'açıq' :
+              res.reqStatus?.name == 'Waiting' ? 'gözləmədə' :
+              res.reqStatus?.name == 'Completed' ? 'təsdiqləndi' :
+              res.reqStatus?.name == 'Denied' ? 'imtina' :
+              res.reqStatus?.name == 'InProgress' ? 'icrada' : 'qapalı',
+      },
+      fileId: res.file?.id ?? null,
+      responses: res.responses?.map((r: any) => ({
+        id: r.id,
+        responder: r.username + ' ' + r.usersurname,
+        responderPosition: r.position,
+        text: r.text,
+        createdAt: new Date(r.createdAt+"Z").toLocaleString('en-GB', {
+          timeZone:'Asia/Baku',
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }).replace(',', '').replaceAll('/', '.'),
+        fileId: r.fileId ?? null
+      })) ?? [],
+    };
+  }
+
 
   onFileSelected(event: any) {
       const file = event.target.files[0];
@@ -93,6 +225,27 @@ export class SingleRequest implements OnInit {
   userphotoUrl:string='';
   userphotoId:number=0;
 
+  reportForm = {
+    reqPriorityId: null as number | null,
+    reqTypeId: null as number | null,
+    reqStatusId: 1, // Default status
+    executorId: null as number | null,
+    createdAt: new Date(),
+    firstOperationDate: null as Date | null,
+    closeDate: null as Date | null,
+    result: '',
+    solution: '',
+    operationTime: null as number | null,
+    plannedOperationTime: null as number | null,
+    type: 'ApplicationMaintenance',
+    requestSender: '',
+    solmanReqNumber: null as number | null,
+    communication: 'Email',
+    isRoutine: false,
+    code: '',
+    rootCause: ''
+  };
+
 
 
 
@@ -100,7 +253,9 @@ export class SingleRequest implements OnInit {
     private route:ActivatedRoute, 
     private userService:UserService,
     private ReqService:RequestService,
-    private Fileserv:FileService
+    private Fileserv:FileService,
+    private RepService:ReportService,
+    private Router:Router,
   ) {}
 
   ngOnInit():void {
@@ -111,7 +266,36 @@ export class SingleRequest implements OnInit {
 
   }
 
+  // Check if request is in progress (icrada)
+  isRequestInProgress(): boolean {
+    return this.singleReq?.Reqstatus?.name === 'icrada';
+  }
+
+  // Check if form can be filled
+  canFillReportForm(): boolean {
+    return this.isRequestInProgress();
+  }
+
+  // Check if close button should be enabled
+  canCloseRequest(): boolean {
+    return this.isRequestInProgress() && this.reportSubmitted;
+  }
+
+  // Check if report form is valid and complete
+  isReportFormValid(): boolean {
+    return !!(
+      this.reportForm.result?.trim() &&
+      this.reportForm.solution?.trim() &&
+      this.reportForm.operationTime &&
+      this.reportForm.plannedOperationTime
+    );
+  }
+
   changeReqStatus(newstatus:string){
+    if (newstatus === 'qapalı' && !this.canCloseRequest()) {
+      this.showAlert('error', 'Report formu doldurulmalıdır və göndərilməlidir');
+      return;
+    }
     const newStatusid=newstatus=='açıq'? 1 : newstatus=='icrada'? 2: newstatus=='gözləmədə'? 5 : newstatus=='imtina'? 4: 6;
     // console.log(this.Reqid,newStatusid)
     this.ReqService.changeReqStatus(this.Reqid,newStatusid,this.LogUserId).subscribe({
@@ -139,8 +323,8 @@ export class SingleRequest implements OnInit {
         header: res.header ?? '',
         text: res.text ?? '',
         category: res.reqCategory.name,
-        reqType: res.reqType.name,
-        reqPriority: res.reqPriority.level,
+        reqType: res.reqType.id,
+        reqPriority: res.reqPriority.id,
         createdAt: new Date(res.createdAt+"Z").toLocaleString('en-GB', {
           timeZone:'Asia/Baku',
           day: '2-digit',
@@ -150,11 +334,14 @@ export class SingleRequest implements OnInit {
           minute: '2-digit',
           hour12: false,
         }).replace(',', '').replaceAll('/', '.'),
-        status: res.reqStatus?.name == 'New' ? 'açıq' :
+        Reqstatus:{
+          id:res.reqStatus?.id,
+          name : res.reqStatus?.name == 'New' ? 'açıq' :
                 res.reqStatus?.name == 'Waiting' ? 'gözləmədə' :
                 res.reqStatus?.name == 'Completed' ? 'təsdiqləndi' :
                 res.reqStatus?.name == 'Denied' ? 'imtina' :
                 res.reqStatus?.name == 'InProgress' ? 'icrada' : 'qapalı',
+        },
         fileId: res.file?.id ?? null,
         responses: res.responses?.map((r: any) => ({
           id: r.id,
@@ -176,6 +363,14 @@ export class SingleRequest implements OnInit {
       this.UserId=res.userId;
       this.userphotoId = res.user?.profilePhoto?.id ?? 0;
 
+      this.reportForm.reqTypeId = this.singleReq!.reqType;
+      this.reportForm.reqPriorityId = this.singleReq!.reqPriority;
+      this.ReqCategoryId = res.reqCategory.id;
+      this.reportForm.reqStatusId=this.singleReq!.Reqstatus.id;
+      this.reportForm.createdAt=res.createdAt;
+      this.reportForm.executorId=res.executorId;
+      this.reportForm.firstOperationDate=res.firstOperationDate;
+
       if (this.userphotoId) {
         this.loadprofilePhoto(res.user.profilePhoto.id).subscribe(url => {
           this.userphotoUrl =  url;
@@ -191,21 +386,58 @@ export class SingleRequest implements OnInit {
       this.getCommments(this.Reqid);
       // this.loadprofilePhoto()
 
+      //existing Report 
+      this.loadExistingReport();
 
+      // console.log(this.singleReq)
       
       // console.log(this.ReqComments)
 
       // Update comment count in filters
-      this.filters.find(f => f.status === 'comment')!.count = this.singleReq.responses?.length || 0;
+      this.filters.find(f => f.status === 'comment')!.count = this.singleReq!.responses?.length || 0;
     },
     error: (err) => console.error(err),
     complete: () => this.loading = false
   });
   }
 
+  loadExistingReport() {
+    this.RepService.getReportByRequestId(this.Reqid).subscribe({
+      next: (report: any) => {
+        if (report) {
+          this.existingReport = report;
+          this.reportSubmitted = true; // Report exists, so it was submitted
+          
+          if (report.firstOperationDate) {
+            this.reportForm.firstOperationDate = new Date(report.firstOperationDate);
+          }
+          
+          console.log('Existing report loaded:', this.existingReport);
+        } else {
+          // Response is null or empty
+          this.reportSubmitted = false;
+        }
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          this.reportSubmitted = false;
+          
+        } else if (err.status === 500) {
+          
+          this.reportSubmitted = false;
+          console.warn('Report check returned 500 - treating as no report exists');
+        } else {
+         
+          console.error('Unexpected error loading report:', err);
+        }
+      }
+    });
+  }
+
   loadRequestHistory() {
     this.ReqService.getRequestHistory(this.Reqid).subscribe({
       next: (res: any[]) => {
+        this.loading=false;
         this.requestHistory = res.map(h => ({
           id: h.id,
           userName: h.userName,
@@ -257,9 +489,6 @@ export class SingleRequest implements OnInit {
     }
   });
 }
-
-
-
 
 
 
@@ -318,10 +547,11 @@ export class SingleRequest implements OnInit {
         });
   }
 
-  alertFunc(text:string){
-    alert(`Say ${text}`);
-  }
+  // alertFunc(text:string){
+  //   alert(`Say ${text}`);
+  // }
 
+  
 
   ReqComments:CommentInterface[]=[];
 
@@ -358,10 +588,21 @@ export class SingleRequest implements OnInit {
     });
   }
 
+  getRequestTypeName(typeId: number | undefined): string {
+    if (!typeId) return 'N/A';
+    return this.requestTypes.find(type => type.id === typeId)?.name || 'Unknown';
+  }
+
+  getRequestPrioritypeName(priId: number | undefined): string {
+    if (!priId) return 'N/A';
+    return this.priorities.find(pri => pri.id === priId)?.name || 'Unknown';
+  }
+
   getCommments(Reqid:number){
     this.ReqService.getComments(Reqid).subscribe({
       next:(res:any[])=>{
-        console.log(res)
+        this.loading=false;
+        // console.log(res)
         this.ReqComments = res.map(h => {
         const comment = {
           ReqId: h.id,
@@ -402,7 +643,99 @@ export class SingleRequest implements OnInit {
         
     })
   }
-    
-  
 
+    
+
+
+  createReport(event: Event) {
+    event.preventDefault();
+
+    if (!this.canFillReportForm()) {
+      this.showAlert('error', 'Report yalnız "icrada" statusunda olan sorğular üçün yaradıla bilər');
+      return;
+    }
+
+    if (!this.isReportFormValid()) {
+      this.showAlert('error', 'Nəticə, Həll yolu, İcra müddəti və Planlaşdırılmış icra müddəti məcburidir');
+      return;
+    }
+
+    const payload = {
+      userId: this.UserId,
+      reqCategoryId: this.ReqCategoryId,
+      reqPriorityId: this.reportForm.reqPriorityId,
+      reqTypeId: this.reportForm.reqTypeId,
+      reqStatusId: this.reportForm.reqStatusId,
+      createdAt: this.reportForm.createdAt,
+      firstOperationDate: this.reportForm.firstOperationDate,
+      operationTime: this.reportForm.operationTime,
+      plannedOperationTime: this.reportForm.plannedOperationTime,
+      result: this.reportForm.result || null,
+      solution: this.reportForm.solution || null,
+      executorId: this.reportForm.executorId,
+      closeDate: this.reportForm.closeDate,
+      requestId: this.Reqid,
+      // Additional fields
+      type: this.reportForm.type,
+      requestSender: this.reportForm.requestSender,
+      solmanReqNumber: this.reportForm.solmanReqNumber,
+      communication: this.reportForm.communication,
+      isRoutine: this.reportForm.isRoutine,
+      code: this.reportForm.code || null,
+      rootCause: this.reportForm.rootCause || null
+    };
+
+    //console.log('Report Payload:', payload); // For debugging
+
+    this.loading = true;
+
+    this.RepService.createReport(payload).subscribe({
+      next: () => {
+        this.showAlert('success', 'Report uğurla yaradıldı');
+        this.reportSubmitted = true;
+        // this.changeReqStatus('qapalı');
+        // this.resetReportForm();
+      },
+      error: (err) => {
+        console.error('Error creating report:', err);
+        this.showAlert('error', err?.error?.message || 'Report yaradılarkən xəta baş verdi');
+        this.loading = false;
+      },
+      complete: () => {
+        this.Router.navigate([`dashboard/requests/singleRequest/${this.singleReq?.Reqid}`]);
+        this.loading = false;
+      }
+    });
+  }
+
+  // Updated resetReportForm
+  // resetReportForm() {
+  //   this.reportForm = {
+  //     reqPriorityId: null,
+  //     reqTypeId: null,
+  //     reqStatusId: 1,
+  //     executorId: null,
+  //     createdAt: new Date(),
+  //     firstOperationDate: null,
+  //     closeDate: new Date(),
+  //     result: '',
+  //     solution: '',
+  //     operationTime: null,
+  //     plannedOperationTime: null,
+  //     type: 'ApplicationMaintenance',
+  //     requestSender: '',
+  //     solmanReqNumber: null,
+  //     communication: 'Email',
+  //     isRoutine: false,
+  //     code: '',
+  //     rootCause: ''
+  //   };
+      
+    
+
+  // }
+
+  printPage(){
+    window.print()
+  }
 }

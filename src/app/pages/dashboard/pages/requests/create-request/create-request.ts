@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Category } from '../../../../../services/Interfaces';
 import { RequestService } from '../../../../../services/RequestServices/RequestService';
  RequestService 
@@ -45,7 +45,8 @@ export class CreateRequest {
 
   constructor(
     private fb:FormBuilder,
-    private requestServices:RequestService
+    private requestServices:RequestService,
+    private router:Router,
   ) {}
 
   ngOnInit() {
@@ -136,6 +137,9 @@ getCategories() {
         this.requestForm.value.priority= [this.priorityId]
         this.requestForm.value.request_type= [this.requestTypeId]
         this.showAlert("success", "Sorğu uğurla göndərildi");
+        setTimeout(() => {
+          this.router.navigate([`/dashboard/requests`])
+        }, 1500);
       },
       error: (err) => {
         console.error(err);

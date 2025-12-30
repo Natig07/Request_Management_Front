@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, } from 'rxjs';
-import { Category, CommentInterface,  } from '../Interfaces';
+import { Category, CommentInterface, PagedResult, RequestFilter,  } from '../Interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class RequestService {
@@ -10,20 +10,17 @@ export class RequestService {
   constructor(private http: HttpClient) {}
 
   getCategories(): Observable<Category[]> {
-    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
-    return this.http.get<Category[]>(`${this.baseUrl}/Category`, { headers })
+    return this.http.get<Category[]>(`${this.baseUrl}/Category`,)
   }
 
 
   createRequest(formData: FormData): Observable<any> {
-    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
     // console.log(Array.from(formData.entries()));
-    return this.http.post<any>(`${this.baseUrl}/Requests`, formData,{headers});
+    return this.http.post<any>(`${this.baseUrl}/Requests`, formData);
   }
 
   getAllRequests(): Observable<any> {
-    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
-    return this.http.get<any>(`${this.baseUrl}/Requests`, {headers});
+    return this.http.get<any>(`${this.baseUrl}/Requests`);
   }
 
   getRequestById(id:number):Observable<any>{
@@ -31,7 +28,6 @@ export class RequestService {
   }
 
   changeReqStatus(requestId:number,newStatusId:number,userId:number){
-    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
     return this.http.put<any>(`${this.baseUrl}/Requests/${requestId}/status/${newStatusId}/${userId}`,{requestId,newStatusId,userId});
   }
 
@@ -53,6 +49,30 @@ export class RequestService {
      return this.http.put(`${this.baseUrl}/Requests/take/${executorId}/${reqId}`,{});
 
 
+  }
+
+  getFilteredRequests(filter: RequestFilter): Observable<PagedResult<any>> {
+  const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
+
+  let params = new HttpParams();
+
+  Object.entries(filter).forEach(([key, value]) => {
+    if (value !== null && value !== undefined && value !== '') {
+      params = params.set(key, value.toString());
+    }
+  });
+
+  return this.http.get<PagedResult<any>>(
+    `${this.baseUrl}/Requests/filter`,
+    { headers, params }
+  );
+  }
+  getRequestBySection(id: number, section: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/Requests/${id}/section/${section}`);
+  }
+
+  getCommentCount(reqId: number): Observable<{count: number}> {
+    return this.http.get<{count: number}>(`${this.baseUrl}/Requests/${reqId}/comment-count`);
   }
 
 

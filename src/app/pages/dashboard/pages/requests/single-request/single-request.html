@@ -1,180 +1,217 @@
-<main class="h-fit py-5 px-4 relative">
-    <section class="flex  justify-between">
-        <!-- Request info -->
-        <div class="flex  justify-center items-center ">
-            <h1 class=" text-xl font-semibold">Request {{" "+Reqid}}</h1>
-
-            <p class=" mx-2 text-gray-500">{{ReqCategory}}</p>
-
+<main class="h-fit py-5 px-4 ">
+     <!-- SUCCESS MESSAGE -->
+        @if (successMessage) {
+        <div class="sticky top-4 flex justify-center  z-50 pointer-events-none">
+            <div
+            class="bg-green-500 text-white px-4 py-2 rounded-lg  shadow-md flex items-center gap-x-2 transition-opacity duration-300">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>{{ successMessage }}</span>
+            </div>
         </div>
+        }
 
-        <!-- Status -->
-         <p class="capitalize" [ngClass]="singleReq?.status=='açıq'?'text-[#F57F17]':singleReq?.status=='gözləmədə'?'text-[#ffb900]':singleReq?.status=='icrada'?'text-[#6045E2]':singleReq?.status=='qapalı'?'text-[#1976D2]':singleReq?.status=='təsdiqləndi'?'text-[#1BC167]':'text-[#FB2C36]'">Status: {{singleReq?.status}} </p>
-    </section>
+        <!-- ERROR MESSAGE -->
+        @if (errorMessage) {
+        <div class="sticky
+        top-4 flex justify-center items-start  z-50 pointer-events-none">
+            <div
+            class="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md flex items-center gap-x-2 transition-opacity duration-300">
+            <i class="bi bi-exclamation-octagon-fill"></i>
+            <span>{{ errorMessage }}</span>
+            </div>
+        </div>
+        }
 
-    <!-- Filters tab -->
-    <section class="flex w-full  mt-12 relative my-7 border-b"> 
-        @for (filter of filters ; track filter) {
-            <button  
-            (click)="setActiveFilter(filter.status)" 
-            [ngClass]="{ 'border border-b-white   -mb-[1px] text-[#55539F]  font-semibold': activeFilter === filter.status }" class="p-1 text-[12px] rounded-t-sm py-2 cursor-pointer  w-[14%]" > {{ filter.label }} 
-            @if (filter.count!=null) {
-              <span class="mx-2 text-[#6562F0]">{{ filter.count }}</span> 
-            }   
-            
-            </button>
-        } 
-    </section>
+   
+        <section class="flex  justify-between">
+            <!-- Request info -->
+            <div class="flex  justify-center items-center ">
+                <h1 class=" text-xl font-semibold">Request {{" "+Reqid}}</h1>
 
-    <!-- Tab data -->
+                <p class=" mx-2 text-gray-500">{{singleReq?.category}}</p>
 
-    <!-- Request -->
-     @if (activeFilter=='request') {
-       <div class="flex flex-col justify-end gap-y-4">
-            <!-- Request -->
-            <div class="flex gap-x-3">
-                <!-- Profile Photo -->
-                <div class="w-10 h-10 rounded-lg   text-2xl text-center flex justify-center items-center "
-                [ngClass]="userphotoId?'bg-none border border-black/15 ':'bg-gray-300'">
-                        
-                        @if (userphotoUrl!='') {
-                          <img [src]="userphotoUrl" 
-                          width="w-fit"
-                          height='h-fit'
-                          loading="lazy" class="object-cover " alt="User_profile"> 
-                        }@else {
-                          <i class="bi bi-person-fill text-white "></i>
-                        }      
-                </div>
+            </div>
 
-                <div class="w-11/12 flex flex-col gap-y-6">
+            <!-- Status -->
+            <p class="capitalize" [ngClass]="singleReq?.Reqstatus?.name=='açıq'?'text-[#F57F17]':singleReq?.Reqstatus?.name=='gözləmədə'?'text-[#ffb900]':singleReq?.Reqstatus?.name=='icrada'?'text-[#6045E2]':singleReq?.Reqstatus?.name=='qapalı'?'text-[#1976D2]':singleReq?.Reqstatus?.name=='təsdiqləndi'?'text-[#1BC167]':'text-[#FB2C36]'">Status: {{singleReq?.Reqstatus?.name}} </p>
+        </section>
 
+        <!-- Filters tab -->
+        <section class="flex w-full  mt-12 relative my-7 border-b"> 
+            @for (filter of filters ; track filter) {
+                <button  
+                (click)="setActiveFilter(filter.status)" 
+                [ngClass]="{ 'border border-b-white   -mb-[1px] text-[#55539F]  font-semibold': activeFilter === filter.status }" class="p-1 text-[12px] rounded-t-sm py-2 cursor-pointer  w-[14%]" > {{ filter.label }} 
+                @if (filter.count!=null) {
+                <span class="mx-2 text-[#6562F0]">{{ filter.count }}</span> 
+                }   
+                
+                </button>
+            } 
+        </section>
 
-                    <!-- request text and sender -->
-                    <div class="flex  w-full flex-col pl-10 gap-y-3 border border-black/15 p-3 rounded-xl">
-                        
-                        <!-- Request sender -->
-                        <div class="flex justify-between">
-                            <div class="flex items-baseline justify-center w-fit">
-                                <h2 class="font-semibold">{{singleReq?.reqsender}} </h2>
-                                <span class="mx-2 text-gray-500 text-sm">{{singleReq?.senderPosition}}</span>
-                            </div>
-                            <!-- date -->
-                            <div class="flex gap-x-2 items-center justify-center text-gray-500 text-sm">
-                                <i class="bi bi-clock"></i>
-                                <span>{{singleReq?.createdAt}}</span>
-                            </div>
+        <!-- Tab data -->
+
+        <!-- Request -->
+        @if (activeFilter=='request') {
+            <div class="flex flex-col justify-end gap-y-4">
+                    <!-- Request -->
+                    <div class="flex gap-x-3">
+                        <!-- Profile Photo -->
+                        <div class="w-10 h-10 rounded-lg   text-2xl text-center flex justify-center items-center "
+                        [ngClass]="userphotoId?'bg-none border border-black/15 ':'bg-gray-300'">
+                                
+                                @if (userphotoUrl!='') {
+                                <img [src]="userphotoUrl" 
+                                width="w-fit"
+                                height='h-fit'
+                                loading="lazy" class="object-cover " alt="User_profile"> 
+                                }@else {
+                                <i class="bi bi-person-fill text-white "></i>
+                                }      
                         </div>
-                        <!-- request text -->
-                        <div class="flex flex-col gap-y-3">
-                            <h3 class="font-semibold text-xl">{{singleReq?.header}}</h3>
-                            <p class="text-sm">{{singleReq?.text}}</p>
 
-                            <!-- attachment , request type and priority -->
-                            
-                            
-                                <div class="flex items-center justify-center">
-                                    @if (singleReq?.fileId) {
-                                        <button (click)="getFile(singleReq?.fileId!)" class="text-sky-600 cursor-pointer ">Qoşma</button>
-                                    }@else {}
-            
-                                    <div class="text-gray-400 text-sm flex flex-1 gap-x-7 items-center justify-end w-fit">
-                                        <p>{{singleReq?.reqType}}</p>
-                                        <p>{{singleReq?.reqPriority}}</p>
+                        <div class="w-11/12 flex flex-col gap-y-6">
+
+
+                            <!-- request text and sender -->
+                            <div class="flex  w-full flex-col pl-10 gap-y-3 border border-black/15 p-3 rounded-xl">
+                                
+                                <!-- Request sender -->
+                                <div class="flex justify-between">
+                                    <div class="flex items-baseline justify-center w-fit">
+                                        <h2 class="font-semibold">{{singleReq?.reqsender}} </h2>
+                                        <span class="mx-2 text-gray-500 text-sm">{{singleReq?.senderPosition}}</span>
+                                    </div>
+                                    <!-- date -->
+                                    <div class="flex gap-x-2 items-center justify-center text-gray-500 text-sm">
+                                        <i class="bi bi-clock"></i>
+                                        <span>{{singleReq?.createdAt}}</span>
                                     </div>
                                 </div>
-                            
-                            
-                        </div>
-                    </div>
-                    @if (ReqComments) {
+                                <!-- request text -->
+                                <div class="flex flex-col gap-y-3">
+                                    <h3 class="font-semibold text-xl">{{singleReq?.header}}</h3>
+                                    <p class="text-sm">{{singleReq?.text}}</p>
 
-                        @for (comment of ReqComments ; track comment) {
-                            
-                            <div class="flex gap-x-3">
-                                <!-- Profile Photo -->
-                                <div class="w-10 h-10 rounded-lg   text-2xl text-center flex justify-center items-center "
-                                [ngClass]="comment.user.profilePhotoId?'bg-none border border-black/15 ':'bg-gray-300'">
-                                        
-                                        @if (comment.userProfileUrl!='') {
-                                        <img [src]="comment.userProfileUrl" 
-                                        width="w-fit"
-                                        height='h-fit'
-                                        loading="lazy" class="object-cover " alt="User_profile"> 
-                                        }@else {
-                                        <i class="bi bi-person-fill text-white "></i>
-                                        }      
-                                </div>
-
-                                <!-- Comment and sender, text -->
-                                <div class="flex flex-col  px-4 py-3 gap-y-3 w-full border border-black/15 rounded-xl" >
-                                    <!-- Responder -->
-                                    <div class="flex w-full  justify-between">
-                                        <div class="flex items-baseline content-center gap-x-2">
-                                                <h3 class="font-semibold">{{comment.user.name+' '+comment.user.surname}}</h3>
-                                                <span class="text-sm text-gray-500">{{comment.user.position}}</span>
+                                    <!-- attachment , request type and priority -->
+                                    
+                                    
+                                        <div class="flex items-center justify-center">
+                                            @if (singleReq?.fileId) {
+                                                <button (click)="getFile(singleReq?.fileId!)" class="text-sky-600 cursor-pointer ">Qoşma</button>
+                                            }@else {}
+                    
+                                            <div class="text-gray-400 text-sm flex flex-1 gap-x-7 items-center justify-end w-fit">
+                                                <p>{{getRequestTypeName(singleReq?.reqType)}}</p>
+                                                <p>{{getRequestPrioritypeName(singleReq?.reqPriority)}}</p>
+                                            </div>
                                         </div>
-                                        <div class="flex text-gray-500 text-sm gap-x-2">
-                                            <i class="bi bi-clock"></i>
-                                            <span>{{comment.createdAt}}</span>
-                                        </div>
-                                    </div>
-
-                                    <p class="text-sm">{{comment.text}}</p>
+                                    
                                     
                                 </div>
                             </div>
+                            @if (ReqComments) {
+
+                                @for (comment of ReqComments ; track comment) {
+                                    
+                                    <div class="flex gap-x-3">
+                                        <!-- Profile Photo -->
+                                        <div class="w-10 h-10 rounded-lg   text-2xl text-center flex justify-center items-center "
+                                        [ngClass]="comment.user.profilePhotoId?'bg-none border border-black/15 ':'bg-gray-300'">
+                                                
+                                                @if (comment.userProfileUrl!='') {
+                                                <img [src]="comment.userProfileUrl" 
+                                                width="w-fit"
+                                                height='h-fit'
+                                                loading="lazy" class="object-cover " alt="User_profile"> 
+                                                }@else {
+                                                <i class="bi bi-person-fill text-white "></i>
+                                                }      
+                                        </div>
+
+                                        <!-- Comment and sender, text -->
+                                        <div class="flex flex-col  px-4 py-3 gap-y-3 w-full border border-black/15 rounded-xl" >
+                                            <!-- Responder -->
+                                            <div class="flex w-full  justify-between">
+                                                <div class="flex items-baseline content-center gap-x-2">
+                                                        <h3 class="font-semibold">{{comment.user.name+' '+comment.user.surname}}</h3>
+                                                        <span class="text-sm text-gray-500">{{comment.user.position}}</span>
+                                                </div>
+                                                <div class="flex text-gray-500 text-sm gap-x-2">
+                                                    <i class="bi bi-clock"></i>
+                                                    <span>{{comment.createdAt}}</span>
+                                                </div>
+                                            </div>
+
+                                            <p class="text-sm">{{comment.text}}</p>
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                }
                             
-                        }
-                    
-                    }
+                            }
 
-                </div>
-                
-            </div>
-            
-
-            
-           
-            <!-- Print and action buttons -->
-            <div class=" flex justify-between w-full items-center pl-7 text-sm px-3 mt-5">
-                <button class="flex gap-x-2 text-center items-baseline align-baseline group text-[#6562F0] cursor-pointer">
-                    <i class="bi bi-printer-fill opacity-70 group-hover:opacity-100"></i>
-                    <p>Çap et</p>
-                </button>
-
-                <div class="flex justify-end w-1/5 gap-x-2">
-
-                    @if (singleReq?.status === 'açıq') {
-                        <button class="bg-white text-sm w-1/2 cursor-pointer opacity-70 hover:opacity-100 text-[#1613be] border border-[#1613be] rounded-md py-2 transition" (click)="changeReqStatus('imtina')">İmtina et</button>
-                        <button class="bg-[#6562F0] text-sm w-1/2 cursor-pointer hover:bg-[#1613be] text-white rounded-md py-2 transition" (click)="changeReqStatus('icrada');takeRequest(singleReq?.Reqid!)">Lok et</button>
-                    }
-
-                    @if (singleReq?.status === 'icrada') {
-                        <button class="bg-white text-sm w-1/2 cursor-pointer opacity-70 hover:opacity-100 text-[#1613be] border border-[#1613be] rounded-md py-2 transition" (click)="changeReqStatus('gözləmədə')">Gözlət</button>
-                        <button class="bg-[#6562F0] text-sm w-1/2 cursor-pointer hover:bg-[#1613be] text-white rounded-md py-2 transition" (click)="changeReqStatus('qapalı')">Bağla</button>
-                    }
-
-                    @if (singleReq?.status === 'gözləmədə') {
-                        <button class="bg-[#6562F0] text-sm w-4/5 cursor-pointer hover:bg-[#1613be] text-white rounded-md py-2 transition" (click)="changeReqStatus('icrada')">Gözləmədən çıxart</button>
+                        </div>
                         
-                    }
+                    </div>
+                    
 
-                    @if (singleReq?.status === 'imtina') {
-                        <span class="text-red-500 text-sm">İmtina edildi</span>
-                    }
-
-                    @if (singleReq?.status === 'qapalı') {
-                        <span class="text-gray-500 text-sm">Qapalı</span>
-                    }
-
-                </div>
-
+                    
                 
+                    <!-- Print and action buttons -->
+                    <div class=" flex justify-between w-full items-center pl-7 text-sm px-3 mt-5">
+                        <button 
+                        (click)="printPage()"
+                        class="flex gap-x-2 text-center items-baseline align-baseline group text-[#6562F0] cursor-pointer">
+                            <i class="bi bi-printer-fill opacity-70 group-hover:opacity-100"></i>
+                            <p>Çap et</p>
+                        </button>
+
+                        <div class="flex justify-end w-1/5 gap-x-2">
+
+                            @if (singleReq?.Reqstatus?.name === 'açıq') {
+                                <button class="bg-white text-sm w-1/2 cursor-pointer opacity-70 hover:opacity-100 text-[#1613be] border border-[#1613be] rounded-md py-2 transition" (click)="changeReqStatus('imtina')">İmtina et</button>
+                                <button class="bg-[#6562F0] text-sm w-1/2 cursor-pointer hover:bg-[#1613be] text-white rounded-md py-2 transition" (click)="changeReqStatus('icrada');takeRequest(singleReq?.Reqid!)">Lok et</button>
+                            }
+
+                            @if (singleReq?.Reqstatus?.name === 'icrada') {
+                                <button class="bg-white t?.nameext-sm w-1/2 cursor-pointer opacity-70 hover:opacity-100 text-[#1613be] border border-[#1613be] rounded-md py-2 transition" (click)="changeReqStatus('gözləmədə')">Gözlət</button>
+
+                                <button 
+                                    class="text-sm w-1/2 rounded-md py-2 transition"
+                                    [disabled]="!canCloseRequest()"
+                                    [ngClass]="{
+                                        'bg-[#6562F0] hover:bg-[#1613be] text-white cursor-pointer': canCloseRequest(),
+                                        'bg-gray-300 text-gray-500 cursor-not-allowed': !canCloseRequest()
+                                    }"
+                                    [title]="!canCloseRequest() ? 'Report formu doldurulmalıdır' : ''"
+                                    (click)="changeReqStatus('qapalı')">
+                                    Bağla
+                                </button>
+                            }
+
+                            @if (singleReq?.Reqstatus?.name === 'gözləmədə') {
+                                <button class="bg-[#6562F0] text-sm w?.name-4/5 cursor-pointer hover:bg-[#1613be] text-white rounded-md py-2 transition px-2" (click)="changeReqStatus('icrada')">Gözləmədən çıxart</button>
+                                
+                            }
+
+                            @if (singleReq?.Reqstatus?.name === 'imtina') {
+                                <span class="text-red-500 text-sm">İmtina edildi</span>
+                            }
+
+                            @if (singleReq?.Reqstatus?.name === 'qapalı') {
+                                <span class="text-gray-500 text-sm">Qapalı</span>
+                            }
+
+                        </div>
+
+                        
+                    </div>
             </div>
-       </div>
-     }
-     <!-- Comments tab -->
+        }
+        <!-- Comments tab -->
         @if (activeFilter=="comment" ) {
         <section class="flex flex-col gap-y-6">
             @if (ReqComments.length==0) {
@@ -278,271 +315,336 @@
                 }
             </section>
         }@else if (activeFilter=="requestİnfo") {
-        <!-- Request Info -->
-         <form class="flex  flex-col gap-y-5 text-sm">
-            <!-- Priority and Request type -->
-            <div class="flex gap-x-4">
 
-                <!-- Priority -->
-                <div class="text-sm w-1/2 flex flex-col gap-y-2">
-                    <label for="priority_id" class="font-semibold w-fit">
-                    Prioritet
+            @if (!canFillReportForm() && (singleReq?.Reqstatus?.name=="qapalı"? false : singleReq?.Reqstatus?.name=="imtina"? false: true)) {
+                <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4 flex items-center gap-x-2">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>Report formu yalnız "icrada" statusunda olan sorğular üçün doldurula bilər.</span>
+                </div>
+            }
+
+            <!-- Success message if report already submitted -->
+            @if (reportSubmitted) {
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 flex items-center gap-x-2">
+                    <i class="bi bi-check-circle-fill"></i>
                     
-                    </label>
+                    <span>{{singleReq?.Reqstatus?.name!=='qapalı'? 'Report artıq göndərilib. İndi sorğunu bağlaya bilərsiniz.':'Report artıq göndərilib'}}</span>
+                </div>
+            }
+            <form (ngSubmit)="createReport($event)" class="flex  flex-col gap-y-5 text-sm">
+                <!-- Priority and Request type -->
+                <div class="flex gap-x-4">
 
-                    <select
-                        name="priority_select"
-                        id="priority_id"
+                    <!-- Priority -->
+                    <div class="text-sm w-1/2 flex flex-col gap-y-2">
+                        <label for="priority_id" class="font-semibold w-fit">
+                        Prioritet
                         
-                        class="border border-black/15 capitalize rounded-md px-1.5 py-2 cursor-pointer outline-none focus:ring-1 focus:ring-black/25"
-                    >
-                        @for (p of priorities; track p.id) {
-                            <option [value]="p.id" class="uppercase">{{ p.name }}</option>
-                        }
-                    </select>
+                        </label>
+
+                        <select
+                            disabled
+                            name="priority_select"
+                            id="priority_id"
+                            [(ngModel)]="reportForm.reqPriorityId"
+                            required
+                            class="border border-black/15 capitalize rounded-md px-1.5 py-2 cursor-pointer outline-none focus:ring-1 focus:ring-black/25"
+                        >
+                            @for (p of priorities; track p.id) {
+                                <option [value]="p.id"
+                                [selected]="p.id===singleReq?.reqPriority"
+                                class="uppercase">{{ p.name }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Request Type -->
+                    <div class="text-sm w-1/2 flex flex-col gap-y-2">
+                        <label for="req_type_id" class="font-semibold w-fit">
+                            Sorğunun tipi
+                            
+                        </label>
+
+                        <select
+                            disabled
+                            name="request_type_select"
+                            id="req_type_id"
+                            [(ngModel)]="reportForm.reqTypeId"
+                            required
+                            class="border  border-black/15 capitalize rounded-md px-1.5 py-2 cursor-pointer outline-none  focus:ring-1 focus:ring-black/25"
+                        >
+                            @for (t of requestTypes; track t.id) {
+                                <option [value]="t.id"
+                                class="uppercase">{{ t.name }}</option>
+                            }
+                        </select>
+                    </div>
+
                 </div>
 
-                <!-- Request Type -->
-                <div class="text-sm w-1/2 flex flex-col gap-y-2">
-                    <label for="req_type_id" class="font-semibold w-fit">
-                        Sorğunun tipi
-                        
+
+                <!-- Result -->
+                <div class="flex flex-col gap-y-2">
+                    <label for="result" class="font-semibold">
+                        Nəticə
                     </label>
 
-                    <select
-                        name="request_type_select"
-                        id="req_type_id"
-                        
-                        class="border  border-black/15 capitalize rounded-md px-1.5 py-2 cursor-pointer outline-none  focus:ring-1 focus:ring-black/25"
-                    >
-                        @for (t of requestTypes; track t.id) {
-                            <option [value]="t.id" class="uppercase">{{ t.name }}</option>
-                        }
-                    </select>
+                    <textarea 
+                        name="result_textarea" id="result" rows="4"
+                        [(ngModel)]="reportForm.result"
+                        class="h-28 border border-black/15 rounded-xl outline-none p-2 text-sm resize-none"></textarea>
                 </div>
 
-            </div>
-
-
-            <!-- Result -->
-            <div class="flex flex-col gap-y-2">
-                <label for="result" class="font-semibold">
-                    Nəticə
-                </label>
-
-                <textarea name="result_textarea" id="result" rows="4" class="h-28 border border-black/15 rounded-xl outline-none p-2 text-sm resize-none"></textarea>
-            </div>
-
-            <!-- Solution -->
-            <div class="flex flex-col gap-y-2">
-                <label for="solution" class="font-semibold">
-                    Həll yolu
-                </label>
-
-                <textarea name="solution_textarea" id="solution" rows="4" class="h-28 border border-black/15 rounded-xl outline-none p-2 text-sm resize-none"></textarea>
-            </div>
-
-            <!-- Progress time and Planned progress time -->
-            <div class="flex gap-x-4">
-
-                <!-- Progress time -->
-                <div class="text-sm w-1/2 flex flex-col gap-y-2">
-                    <label for="progress_id" class="font-semibold w-fit">
-                        İcra müddəti
+                <!-- Solution -->
+                <div class="flex flex-col gap-y-2">
+                    <label for="solution" class="font-semibold">
+                        Həll yolu
                     </label>
 
-                    <input
-                        name="progress_time"
-                        id="progress_id"
-                        
-                        class="border border-black/15 capitalize rounded-md px-1.5 py-2  outline-none focus:ring-1 focus:ring-black/25"
-                    >
-                       
-                    
+                    <textarea 
+                    name="solution_textarea" id="solution" rows="4"
+                    [(ngModel)]="reportForm.solution"
+                    class="h-28 border border-black/15 rounded-xl outline-none p-2 text-sm resize-none"></textarea>
                 </div>
 
-                <!-- Planned progress time -->
-                <div class="text-sm w-1/2 flex flex-col gap-y-2">
-                    <label for="planndeProgress_id" class="font-semibold w-fit">
-                        Planlaşdırılmış icra müddəti
+                <!-- Progress time and Planned progress time -->
+                <div class="flex gap-x-4">
+
+                    <!-- Progress time -->
+                    <div class="text-sm w-1/2 flex flex-col gap-y-2">
+                        <label for="progress_id" class="font-semibold w-fit">
+                            İcra müddəti
+                        </label>
+
+                        <input
+                            type="number"
+                            name="progress_time"
+                            id="progress_id"
+                            [(ngModel)]="reportForm.operationTime"
+                            placeholder="Məs: 2 saat"
+                            min="0"
+                            class="border border-black/15 capitalize rounded-md px-1.5 py-2  outline-none focus:ring-1 focus:ring-black/25"
+                        >
+                        
+                        
+                    </div>
+
+                    <!-- Planned progress time -->
+                    <div class="text-sm w-1/2 flex flex-col gap-y-2">
+                        <label for="planndeProgress_id" class="font-semibold w-fit">
+                            Planlaşdırılmış icra müddəti
+                        </label>
+
+                        <input
+                            type="number"
+                            min="0"
+                            name="planned_progress_time"
+                            id="planndeProgress_id"
+                            [(ngModel)]="reportForm.plannedOperationTime"
+                            placeholder="Məs: 3 saat"
+                            class="border border-black/15 capitalize rounded-md px-1.5 py-2  outline-none focus:ring-1 focus:ring-black/25"
+                        >
+                        
+                        
+                    </div>
+
+                </div>
+
+                <!-- Type -->
+                <div class="flex flex-col gap-y-3">
+                <span class="font-semibold">Tip</span>
+
+                <div class="w-fit flex gap-x-6">
+
+                    <!-- Radio 1 -->
+                    <label for="app_main" class="flex items-center gap-x-2 cursor-pointer">
+                    <input type="radio" name="type_radio" id="app_main"
+                    class="accent-green-600 w-4 h-4" 
+                    checked
+                    [(ngModel)]="reportForm.type"
+                    value="ApplicationMaintenance"
+                    >
+                    <span>Application Maintenance</span>
                     </label>
 
-                    <input
-                        name="planned_progress_time"
-                        id="planndeProgress_id"
-                        
-                        class="border border-black/15 capitalize rounded-md px-1.5 py-2  outline-none focus:ring-1 focus:ring-black/25"
-                    >
-                       
-                    
-                </div>
-
-            </div>
-
-            <!-- Type -->
-            <div class="flex flex-col gap-y-3">
-              <span class="font-semibold">Tip</span>
-
-              <div class="w-fit flex gap-x-6">
-
-                <!-- Radio 1 -->
-                <label for="app_main" class="flex items-center gap-x-2 cursor-pointer">
-                   <input type="radio" name="type_radio" id="app_main"
-                   class="accent-green-600 w-4 h-4" checked>
-                   <span>Application Maintenance</span>
-                </label>
-
-                <!-- Radio 2 -->
-                <label for="app_dev" class="flex items-center gap-x-2 cursor-pointer">
-                  <input type="radio" name="type_radio" id="app_dev"
-                   class="accent-green-600 w-4 h-4">
-                  <span>Application Development</span>
-                </label>
-
-              </div>
-            </div>
-
-            <!--Request sender and Solman request number  -->
-            <div class="flex gap-x-4">
-
-                <!-- Request sender -->
-                <div class="text-sm w-1/2 flex flex-col gap-y-2">
-                    <label for="request_sender_id" class="font-semibold w-fit">
-                        Sorğunu göndərən
+                    <!-- Radio 2 -->
+                    <label for="app_dev" class="flex items-center gap-x-2 cursor-pointer">
+                    <input type="radio"                   
+                        name="type_radio"             
+                        id="app_dev"
+                        class="accent-green-600 w-4 h-4"
+                        [(ngModel)]="reportForm.type"
+                        value="ApplicationDevelopment"
+                        >
+                    <span>Application Development</span>
                     </label>
 
-                    <input
-                        name="request_sender_input"
-                        id="request_sender_id"
-                        
-                        class="border border-black/15 capitalize rounded-md px-1.5 py-2  outline-none focus:ring-1 focus:ring-black/25"
-                    >
-                       
-                    
+                </div>
                 </div>
 
-                <!-- Solman request number -->
-                <div class="text-sm w-1/2 flex flex-col gap-y-2">
-                    <label for="sol_req_num" class="font-semibold w-fit">
-                        Solman Request Number
+                <!--Request sender and Solman request number  -->
+                <div class="flex gap-x-4">
+
+                    <!-- Request sender -->
+                    <div class="text-sm w-1/2 flex flex-col gap-y-2">
+                        <label for="request_sender_id" class="font-semibold w-fit">
+                            Sorğunu göndərən
+                        </label>
+
+                        <input
+                            disabled
+                            name="request_sender_input"
+                            id="request_sender_id"
+                            [ngModel]="singleReq?.reqsender"
+                            class="border border-black/15 capitalize rounded-md px-1.5 py-2  outline-none focus:ring-1 focus:ring-black/25"
+                        >
+                        
+                        
+                    </div>
+
+                    <!-- Solman request number -->
+                    <div class="text-sm w-1/2 flex flex-col gap-y-2">
+                        <label for="sol_req_num" class="font-semibold w-fit">
+                            Solman Request Number
+                        </label>
+
+                        <input
+                            name="solmon_req_num"
+                            id="sol_req_num"
+                            type="number"
+                            [(ngModel)]="reportForm.solmanReqNumber"
+                            class="border border-black/15 capitalize rounded-md px-1.5 py-2  outline-none focus:ring-1 focus:ring-black/25"
+                        >
+                    </div>
+
+                </div>
+
+                <!-- Communication -->
+                <div class="flex flex-col gap-y-3">
+                <span class="font-semibold">Əlaqə vasitəsi</span>
+
+                <div class="w-fit flex gap-x-6">
+
+                    <!-- Radio 1 -->
+                    <label for="email_com" class="flex items-center gap-x-2 cursor-pointer">
+                    <input type="radio"                     
+                        name="com_radio"             
+                        id="email_com"
+                        class="accent-green-600 w-4 h-4"
+                        [(ngModel)]="reportForm.communication"
+                        value="Email"
+                        checked>
+                    <span>Email</span>
                     </label>
 
-                    <input
-                        name="solmon_req_num"
-                        id="sol_req_num"
-                        
-                        class="border border-black/15 capitalize rounded-md px-1.5 py-2  outline-none focus:ring-1 focus:ring-black/25"
-                    >
+                    <!-- Radio 2 -->
+                    <label for="phone_com" class="flex items-center gap-x-2 cursor-pointer">
+                    <input                                                             
+                        type="radio"                                   name="com_radio"              
+                        id="phone_com"
+                        [(ngModel)]="reportForm.communication"
+                        value="Phone"
+                        class="accent-green-600 w-4 h-4">
+                    <span>Phone</span>
+                    </label>
+
+                    <!-- Radio 3 -->
+                    <label for="solman_com" class="flex items-center gap-x-2 cursor-pointer">
+                    <input type="radio" name="com_radio" id="solman_com"
+                    [(ngModel)]="reportForm.communication"
+                        value="SOLMAN"
+                    class="accent-green-600 w-4 h-4">
+                    <span>SOLMAN</span>
+                    </label>
+
+                    <!-- Radio 4 -->
+                    <label for="request_com" class="flex items-center gap-x-2 cursor-pointer">
+                    <input type="radio" name="com_radio" id="request_com"
+                        [(ngModel)]="reportForm.communication"
+                        value="REQUEST"
+                    class="accent-green-600 w-4 h-4">
+                    <span>REQUEST</span>
+                    </label>
+
+                </div>
                 </div>
 
-            </div>
 
-             <!-- Communication -->
-            <div class="flex flex-col gap-y-3">
-              <span class="font-semibold">Əlaqə vasitəsi</span>
+                <!-- Routine -->
+                <div class="w-full flex flex-col items-start text-sm gap-y-3">
+                    <span class="font-semibold  w-fit ">Routine</span>
+                    <label class="switch cursor-pointer ">
+                        <input          
+                            type="checkbox"
+                            name="routine_check"
+                            [(ngModel)]="reportForm.isRoutine"
+                
+                        />
+                        <span class="slider"></span>
+                    </label>
 
-              <div class="w-fit flex gap-x-6">
-
-                <!-- Radio 1 -->
-                <label for="email_com" class="flex items-center gap-x-2 cursor-pointer">
-                   <input type="radio" name="com_radio" id="email_com"
-                   class="accent-green-600 w-4 h-4" checked>
-                   <span>Email</span>
-                </label>
-
-                <!-- Radio 2 -->
-                <label for="phone_com" class="flex items-center gap-x-2 cursor-pointer">
-                  <input type="radio" name="com_radio" id="phone_com"
-                   class="accent-green-600 w-4 h-4">
-                  <span>Phone</span>
-                </label>
-
-                <!-- Radio 3 -->
-                <label for="solman_com" class="flex items-center gap-x-2 cursor-pointer">
-                  <input type="radio" name="com_radio" id="solman_com"
-                   class="accent-green-600 w-4 h-4">
-                  <span>SOLMAN</span>
-                </label>
-
-                <!-- Radio 4 -->
-                <label for="request_com" class="flex items-center gap-x-2 cursor-pointer">
-                  <input type="radio" name="com_radio" id="request_com"
-                   class="accent-green-600 w-4 h-4">
-                  <span>REQUEST</span>
-                </label>
-
-              </div>
-            </div>
-
-
-            <!-- Routine -->
-            <div class="w-full flex flex-col items-start text-sm gap-y-3">
-                <span class="font-semibold  w-fit ">Routine</span>
-                <label class="switch cursor-pointer ">
-                    <input          
-                        type="checkbox"
+                </div>
             
-                    />
-                    <span class="slider"></span>
-                </label>
+                <!-- Code -->
+                <div class="flex flex-col gap-y-2">
+                    <label for="code" class="font-semibold">
+                        Code
+                    </label>
 
-            </div>
-           
-             <!-- Code -->
-            <div class="flex flex-col gap-y-2">
-                <label for="code" class="font-semibold">
-                    Code
-                </label>
+                    <textarea name="code_textarea" id="code" 
+                    [(ngModel)]="reportForm.code"
 
-                <textarea name="code_textarea" id="code" rows="4" class="h-28 border border-black/15 rounded-xl outline-none p-2 text-sm resize-none"></textarea>
-            </div>
+                    rows="4" class="h-28 border border-black/15 rounded-xl outline-none p-2 text-sm resize-none"></textarea>
+                </div>
 
 
-            <!-- Root cause -->
-            <div class="flex flex-col gap-y-2">
-                <label for="root_cause" class="font-semibold">
-                    Root cause
-                </label>
+                <!-- Root cause -->
+                <div class="flex flex-col gap-y-2">
+                    <label for="root_cause" class="font-semibold">
+                        Root cause
+                    </label>
 
-                <textarea name="root_cause_textarea" id="root_cause" rows="4" class="h-28 border border-black/15 rounded-xl outline-none p-2 text-sm resize-none"></textarea>
-            </div>
+                    <textarea name="root_cause_textarea" id="root_cause" rows="4"
+                    [(ngModel)]="reportForm.rootCause" 
+                    class="h-28 border border-black/15 rounded-xl outline-none p-2 text-sm resize-none"></textarea>
+                </div>
 
-            <!-- Sent button -->
-              <button class="bg-[#6562F0] w-1/12 text-sm flex items-end cursor-pointer hover:bg-[#1613be] justify-center  rounded-md py-2 h-fit text-white">
-                    Göndər 
-                </button>
-         </form>
+                <!-- Sent button -->
+                <button 
+                        type="submit" 
+                        [disabled]="loading || !canFillReportForm() || reportSubmitted"
+                        class="text-sm w-fit px-6 flex items-center justify-center !text-white rounded-md py-2 h-fit transition"
+                        [ngClass]="{
+                            'bg-[#6562F0] hover:bg-[#1613be] text-white cursor-pointer': canFillReportForm() && !reportSubmitted,
+                            'bg-gray-400 text-white cursor-not-allowed': !canFillReportForm() || loading || reportSubmitted
+                        }"
+                    >
+                        @if (loading) {
+                            <span>Yüklənir...</span>
+                        } @else if (reportSubmitted) {
+                            <span>Göndərilib</span>
+                        } @else {
+                            <span>Göndər</span>
+                        }
+                    </button>
+            </form>
        
-     }
+        }
      
-      @if (successMessage) {
-        <div
-            class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-md flex items-center space-x-2 opacity-0 transition-opacity duration-500"
-            [ngClass]="{'opacity-100': successMessage, 'opacity-0': !successMessage}">
-            <i class="bi bi-check-circle-fill"></i>            
-            <span>{{ successMessage }}</span>
+       
+        @if (loading) {
+        <div class="flex fixed top-0 left-0 w-dvw h-dvh bg-black/45  justify-center items-center">
+            <div
+                class="animate-spin inline-block  size-14 border-[3px] border-current border-t-transparent text-white rounded-full"
+                role="status"
+                aria-label="loading"
+            >
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
-            
-    }
-    @if (errorMessage) {
-        <div
-            class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-md flex items-center space-x-2 opacity-0 transition-opacity duration-500"
-            [ngClass]="{'opacity-100': errorMessage, 'opacity-0': !errorMessage}">
-            <i class="bi bi-exclamation-octagon-fill"></i>            
-            <span>{{ errorMessage }}</span>
-        </div>
-    }
-    @if (loading) {
-    <div class="flex fixed top-0 left-0 w-dvw h-dvh bg-black/45  justify-center items-center">
-        <div
-            class="animate-spin inline-block  size-14 border-[3px] border-current border-t-transparent text-white rounded-full"
-            role="status"
-            aria-label="loading"
-        >
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-    }
-    <!-- <a routerLink="/dashboard/requests" class="cursor-pointer text-sm hover:text-[#6562F0]"> <i class="bi bi-chevron-left"></i> Sorgular</a> -->
+        }
+       
+
+    
 </main>
     

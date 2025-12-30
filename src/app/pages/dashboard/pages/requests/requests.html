@@ -1,220 +1,198 @@
 <main class="h-fit py-5">
-   
- 
-    <h1 class=" w-full text-xl font-semibold">Sorğular</h1>
-  
+    <div class="flex justify-between items-center">
+        <h1 class="w-full text-xl font-semibold">Sorğular</h1>
 
-    <div class="flex justify-between items-baseline">
-        <div class="relative mt-6 w-1/3">
-            <select
-                class="appearance-none px-4 py-1.5 w-full border border-black/20 rounded-sm text-sm text-black outline-none"
-            >
-                <option value="All_reqs" selected>Bütün sorğular</option>
-                <option value="Pending">Gözləyən</option>
-                <option value="Completed">Tamamlanmış</option>
-            </select>
-
-            
-            <span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                <i class="bi bi-chevron-down "></i>
-            </span>
-
-        </div>
-
-        <a routerLink="/dashboard/requests/createRequest" class="bg-[#6562F0] w-[15%] text-sm flex items-end cursor-pointer hover:bg-[#1613be] justify-center  rounded-md py-2 h-fit text-white">
-            <i class="bi flex  bi-plus text-lg  "></i> <span class="p-0">Sorğu yarat</span>
+        <a routerLink="/dashboard/requests/createRequest" 
+           class="bg-[#6562F0] w-[15%] text-sm flex items-end cursor-pointer hover:bg-[#1613be] justify-center rounded-md py-2 h-fit text-white">
+            <i class="bi flex bi-plus text-lg"></i> 
+            <span class="p-0">Sorğu yarat</span>
         </a>
     </div>
 
-    <div class="flex w-full ml-5 mt-12 relative my-7 border-b"> 
-        @for (filter of filters ; track filter) {
-            <button  
-            (click)="setActiveFilter(filter.status)" 
-            [ngClass]="{ 'border border-b-white   -mb-[1px] text-[#55539F]  font-semibold': activeFilter === filter.status }" class="p-1 text-[12px] rounded-t-sm py-2 cursor-pointer  w-[13%]" > {{ filter.label }} 
-            <span class="mx-2 text-[#6562F0]">{{ filter.count }}</span> 
+    <div class="flex w-full ml-5 mt-12 relative text-xs my-7 border-b"> 
+        @for (filter of filters; track filter) {
+            <button
+                (click)="setActiveFilter(filter.status)"
+                [ngClass]="{
+                    'border border-b-white -mb-[1px] ':
+                    activeFilter === filter.status
+                }"
+                class="p-1 rounded-t-sm text-[#55539F] py-2 cursor-pointer w-[13%]">
+                {{ filter.label }}
+                <span class="text-[#6045E2]">{{filter.count}}</span>
+                
             </button>
         } 
     </div>
 
-    <!-- Table Filter dropdown -->
+    <!-- Items per page selector -->
     <div class="flex justify-start w-1/4 ml-5 gap-7 items-baseline">
         <p class="text-sm">Göstərilir</p>
-       <div class="relative mt-2 w-1/4">
+        <div class="relative mt-2 w-1/4">
             <select
-                [(ngModel)]="selectedStatus"
-                (ngModelChange)="selectedStatus=+$event"
+                [(ngModel)]="pageSize"
                 (change)="onItemsPerPageChange()"
-                class="appearance-none px-3 py-1.5 w-full border border-black/20 rounded-sm text-sm text-black outline-none"
-            >
+                class="px-3 py-1.5 w-full border border-black/20 outline-0 rounded-sm text-sm">
                 <option [value]="5">5</option>
                 <option [value]="10">10</option>
                 <option [value]="15">15</option>
                 <option [value]="20">20</option>
                 <option [value]="30">30</option>
             </select>
-
             
-            <span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                <i class="bi bi-chevron-down "></i>
-            </span>
-
         </div>
         <p>sorğu</p>
     </div>
 
     <div class="p-5 bg-gray-100 h-fit">
+        <!-- Loading indicator -->
+        @if (loading) {
+            <div class="flex justify-center items-center py-10">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6562F0]"></div>
+            </div>
+        }
+
         <!-- Table container -->
         <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-            
-            <!-- Table headers with sort arrows -->
             <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    @for (col of columns ; track col) {
-                        <th class="px-3 py-2 text-left text-sm font-medium text-gray-700">
-                            <div class="flex justify-between items-center">
-                            <span>{{ col.label }}</span>
-                            <div class="flex justify-center cursor-pointer">
-                                
-                                <i class="bi bi-arrow-down-up text-gray-400 hover:text-gray-700" (click)="sort(col.key)"></i>
-                            </div>
-                            </div>
-                        </th>
-                    }
-                
-                </tr>
-
-                <tr>
-                    @for (col of columns ; track col) {
-                    
-                        <th class="px-1 py-2">
-                            <input
-                            type="text"
-                            [(ngModel)]="searchText[col.key]"
-                            placeholder="Search..."
-                            class="w-full p-2 border border-gray-300 rounded 
-                            mb-4
-                            focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 text-[12px] font-normal"
-                            />
-                        </th>
-                    }
-                            
-                </tr>
-            </thead>
-
-            <tbody class="divide-y divide-gray-200 bg-white">
-                @for (row of getTableData(); track row) {
-                    <tr [routerLink]="['/dashboard/requests/singleRequest',row.id]">
+                <thead class="bg-gray-50">
+                    <!-- Header row with column labels -->
+                    <tr>
                         @for (col of columns; track col) {
-                        <td  class="px-2 text-left py-3 text-sm text-gray-700 w-fit cursor-pointer max-w-[150px]">
-
-                            @if (STATUS_MAP[row[col.key] ?? '']) {
-                            <app-button 
-                                [color]="STATUS_MAP[row[col.key]!]"
-                                [children]="row[col.key] + ''">
-                            </app-button>
-                            }
-                            @else {
-                            @if (col.key === 'text') {
-                                <span class="max-w-32 text-sm text-gray-700 overflow-hidden break-words line-clamp-3">
-                                {{ row[col.key] }}
-                                </span>
-                            }
-                            @else {
-                                {{ row[col.key] }}
-                            }
-                            }
-
-                        </td>
+                            <th class="px-3 py-2 text-left text-sm font-medium text-gray-700">
+                                <div class="flex justify-between items-center gap-x-3">
+                                    <span>{{ col.label }}</span>
+                                    <div (click)="onSort(col.key)" class="flex justify-center cursor-pointer flex-shrink-0">
+                                        <i class="bi bi-arrow-down-up text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </th>
                         }
                     </tr>
-                }
+                    <!-- Search input row -->
+                    <tr>
+                        @for (col of columns; track col) {
+                            <th class="px-1 py-2">
+                                <input
+                                    type="text"
+                                    [(ngModel)]="searchText[col.key]"
+                                    (ngModelChange)="onSearchChange()"
+                                    placeholder="Search..."
+                                    class="w-full p-2 border border-gray-300 rounded mb-4
+                                           focus:outline-none focus:ring-1 focus:ring-gray-500
+                                           focus:border-gray-500 text-[12px] font-normal" />
+                            </th>
+                        }
+                    </tr>
+                </thead>
 
-                
-                
+                <tbody class="divide-y divide-gray-200 bg-white">
+                    @if (data.length === 0 && !loading) {
+                        <tr>
+                            <td [attr.colspan]="columns.length" class="px-2 py-10 text-center text-gray-500">
+                                Heç bir nəticə tapılmadı
+                            </td>
+                        </tr>
+                    }
 
-                
-            </tbody>
+                    @for (row of data; track row.id) {
+                        <tr [routerLink]="['/dashboard/requests/singleRequest', row.id]" 
+                            class="hover:bg-gray-50 cursor-pointer">
+                            @for (col of columns; track col) {
+                                <td class="px-2 text-left py-3 text-sm text-gray-700 w-fit max-w-[150px]">
+                                    @if (STATUS_MAP[row[col.key] ?? '']) {
+                                        <app-button 
+                                            [color]="STATUS_MAP[row[col.key]!]"
+                                            [children]="row[col.key] + ''">
+                                        </app-button>
+                                    }
+                                    @else {
+                                        @if (col.key === 'text') {
+                                            <span class="max-w-32 text-sm text-gray-700 overflow-hidden break-words line-clamp-3">
+                                                {{ row[col.key] }}
+                                            </span>
+                                        }
+                                        @else {
+                                            {{ row[col.key] }}
+                                        }
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
             </table>
-        
         </div>
     </div>
-    <div class="end-content flex justify-between w-full">
-        <p class="px-2 text-gray-700 text-sm">{{filters[0].count}} nəticədən 1-{{selectedStatus+1}} aralığı göstərlir.</p>
 
+    <!-- Footer with count and pagination -->
+    <div class="end-content flex justify-between w-full">
+        <p class="px-2 text-gray-700 text-sm">
+            {{ totalCount }} nəticədən
+            {{ (page - 1) * pageSize + 1 }} –
+            {{ Math.min(page * pageSize, totalCount) }}
+            aralığı göstərilir
+        </p>
 
         <!-- Pagination -->
-        <nav aria-label="Page navigation">
-        <ul class="pagination flex gap-0.5 justify-content-end select-none text-sm">
-        <!-- Previous -->
-            <li
-            class="page-item px-2 py-1.5 rounded-md transition duration-400 hover:bg-[#55539F] hover:text-white font-semibold"
-            [class.opacity-50]="currentPage === 1"
-            >
-                <button
-                    class="page-link cursor-pointer"
-                    (click)="changePage(currentPage - 1)"
-                    [disabled]="currentPage === 1"
-                >
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-            </li>
+        <nav class="flex items-center gap-2" aria-label="Page navigation">
+            <ul class="pagination flex gap-0.5 justify-content-end select-none text-sm">
+                <!-- Previous -->
+                <li class="page-item px-2 py-1.5 rounded-md transition duration-400 hover:bg-[#55539F] hover:text-white font-semibold"
+                    [class.opacity-50]="currentPage === 1"
+                    [class.pointer-events-none]="currentPage === 1">
+                    <button
+                        class="page-link cursor-pointer"
+                        (click)="changePage(page - 1)"
+                        [disabled]="page === 1">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                </li>
 
-            <!-- Previous Ellipsis -->
-            <li
-            *ngIf="startPage > 1"
-            class="page-item px-2 py-1.5 rounded-md transition duration-300 hover:bg-[#55539F] hover:text-white"
-            >
-                <button
-                    class="page-link cursor-pointer"
-                    (click)="showPreviousGroup()"
-                >
-                    …
-                </button>
-            </li>
+                <!-- Previous Ellipsis -->
+                <li *ngIf="startPage > 1"
+                    class="page-item px-2 py-1.5 rounded-md transition duration-300 hover:bg-[#55539F] hover:text-white">
+                    <button
+                        class="page-link cursor-pointer"
+                        (click)="showPreviousGroup()">
+                        …
+                    </button>
+                </li>
 
-            <!-- Page Numbers -->
-            <li
-            *ngFor="let page of visiblePages"
-            class="page-item px-3 py-1.5 rounded-md transition duration-300 cursor-pointer"
-            [ngClass]="{
-                'bg-[#55539F] text-white': page === currentPage,
-                'hover:bg-[#55539F] hover:text-white': page !== currentPage
-            }"
-            >
-            <button class="page-link cursor-pointer" (click)="changePage(page)">
-                {{ page }}
-            </button>
-            </li>
+                <!-- Page Numbers -->
+                <li *ngFor="let p of visiblePages"
+                    class="page-item px-3 py-1.5 rounded-md transition duration-300 cursor-pointer"
+                    [ngClass]="{
+                        'bg-[#55539F] text-white': p === currentPage,
+                        'hover:bg-[#55539F] hover:text-white': p !== currentPage
+                    }">
+                    <button class="page-link cursor-pointer" (click)="changePage(p)">
+                        {{ p }}
+                    </button>
+                </li>
 
-            <!-- Next Ellipsis -->
-            <li
-            *ngIf="endPage < totalPages"
-            class="page-item px-2 py-1.5 rounded-md transition duration-300 hover:bg-[#55539F] hover:text-white"
-            >
-                <button
-                    class="page-link cursor-pointer"
-                    (click)="showNextGroup()"
-                >
-                    …
-                </button>
-            </li>
+                <!-- Next Ellipsis -->
+                <li *ngIf="endPage < totalPages"
+                    class="page-item px-2 py-1.5 rounded-md transition duration-300 hover:bg-[#55539F] hover:text-white">
+                    <button
+                        class="page-link cursor-pointer"
+                        (click)="showNextGroup()">
+                        …
+                    </button>
+                </li>
 
-            <!-- Next -->
-            <li
-            class="page-item px-2 py-1.5 rounded-md hover:bg-[#55539F] hover:text-white font-semibold"
-            [class.opacity-50]="currentPage === totalPages"
-            >
-                <button
-                    class="page-link cursor-pointer"
-                    (click)="changePage(currentPage + 1)"
-                    [disabled]="currentPage === totalPages"
-                >
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-            </li>
-        </ul>
+                <!-- Next -->
+                <li class="page-item px-2 py-1.5 rounded-md hover:bg-[#55539F] hover:text-white font-semibold"
+                    [class.opacity-50]="currentPage === totalPages"
+                    [class.pointer-events-none]="currentPage === totalPages">
+                    <button
+                        class="page-link cursor-pointer"
+                        (click)="changePage(page + 1)"
+                        [disabled]="page === newTotalPages">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </li>
+            </ul>
         </nav>
     </div>
-
 </main>

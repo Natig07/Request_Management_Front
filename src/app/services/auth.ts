@@ -36,7 +36,7 @@ export class AuthService {
 
       tap(user => {
         this.userService.setCurrentUser(user);
-        console.log('Current user info loaded:', user);
+        // console.log('Current user info loaded:', user);
       }),
     );
   }

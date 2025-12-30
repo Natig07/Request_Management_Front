@@ -51,7 +51,10 @@ export interface SingleRequestType {
   category: number;
   reqPriority: number;
   reqType: number;
-  status:string,
+  Reqstatus:{
+    id:number,
+    name:string
+  },
   fileId?: number;
   header: string;
   createdAt:string;
@@ -105,4 +108,65 @@ export interface CommentInterface{
   userProfileUrl:string;
 
 }
+
+export interface RequestFilter {
+  categoryId?: number;
+  statusId?: number;
+  priorityId?: number;
+  executorId?: number;
+
+  fromDate?: string; // ISO string
+  toDate?: string;
+
+  search?: string;
+
+  page?: number;
+  pageSize?: number;
+  sortField: string | undefined;
+  sortDirection:string;
+}
+
+export interface PagedResult<T> {
+  statusCounts: any;
+  filters: any;
+  items: T[];
+  totalCount: number;
+}
+
+export interface CreateReportInterface {
+  reqPriority: number;
+  reqType: number;
+  result?: string;
+  solution?: string;
+  operationTime?: string;
+  plannedOperationTime?: string;
+  type: string; 
+  requestSender?: string;
+  solmanRequestNumber?: string;
+  communication: string; 
+  isRoutine: boolean;
+  code?: string;
+  rootCause?: string;
+}
+
+export interface ReportFilter {
+  categoryId?: number;
+  executorId?: number;
+  statusId?: number;
+  search?: string;
+  fromDate?: string;
+  toDate?: string;
+  page: number;
+  pageSize: number;
+  sortField: string | undefined;
+  sortDirection:string;
+}
+
+export interface PagedReportResult {
+  items: any[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+}
+
 

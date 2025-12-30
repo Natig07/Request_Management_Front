@@ -37,16 +37,20 @@ export const DD_MM_YYYY_FORMAT = {
   ]
 })
 export class Datepicker {
-  @Output() rangeChange = new EventEmitter<void>();
+  @Output() rangeChange = new EventEmitter<{ start: Date | null; end: Date | null }>();
 
-  range = new FormGroup({
-    start: new FormControl<Date | null>(null),
-    end: new FormControl<Date | null>(null),
-  });
+range = new FormGroup({
+  start: new FormControl<Date | null>(null),
+  end: new FormControl<Date | null>(null),
+});
 
-  constructor() {
-    this.range.valueChanges.subscribe(() => this.rangeChange.emit());
-  }
+constructor() {
+  this.range.valueChanges.subscribe(value => 
+    this.rangeChange.emit(value as { start: Date | null; end: Date | null })
+  );
+}
+
+
 
   // getSelectedDates() {
   //   return {

@@ -14,6 +14,6 @@ export class App {
   constructor(private userService: UserService) {}
 
   ngOnInit() {
-  this.userService.restoreUserFromStorage();
-}
+    this.userService.restoreUserFromStorage();
+  }
 }
